@@ -1,16 +1,15 @@
 package project.learning_managment_system.learning_managment_system_dev.user_managment.Entities;
 
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class Teacher extends User_entity {
     public String speciality;
 }
