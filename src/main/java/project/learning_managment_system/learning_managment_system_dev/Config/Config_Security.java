@@ -23,7 +23,7 @@ public class Config_Security {
         httpSecurity.csrf(customizer->customizer.disable())
                 .authorizeHttpRequests(request->
                         request
-                                .requestMatchers("/sign/**")
+                                .requestMatchers("/sign/")
                                 .permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -36,7 +36,7 @@ public class Config_Security {
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers("/sign/**");
+        return web -> web.ignoring().requestMatchers("/sign/");
     }
 
 }

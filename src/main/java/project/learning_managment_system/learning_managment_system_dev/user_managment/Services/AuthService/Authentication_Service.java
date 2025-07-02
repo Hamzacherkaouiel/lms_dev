@@ -37,14 +37,15 @@ public class Authentication_Service {
     public KeyCloakService keyCloakService;
     private BCryptPasswordEncoder bCrypt=new BCryptPasswordEncoder(12);
 
-    public UserDTO handler(UserCreation userCreation){
+    public UserDTO orchestrator(UserCreation userCreation){
         if(userCreation.getRole()=="student"){
-            return this.createStudent(userCreation);
+            return this.creaUser(userCreation);
         }
         return this.createPrivateUser(userCreation);
     }
-    public UserDTO createStudent(UserCreation userCreation)  {
+    public UserDTO creaUser(UserCreation userCreation)  {
          try {
+             userCreation.setRole("student");
              this.keyCloakService.createUser(userCreation);
              userCreation.setPassword(this.bCrypt.encode(userCreation.getPassword()));
              Student student=this.studentRepo.save(this.studentMapper.Creation(userCreation));

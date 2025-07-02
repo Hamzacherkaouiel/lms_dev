@@ -2,6 +2,7 @@ package project.learning_managment_system.learning_managment_system_dev.user_man
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +17,14 @@ public class AuthController {
     @Autowired
     public Authentication_Service service;
     @PostMapping("/")
+    public ResponseEntity<UserDTO> createStudent(@RequestBody UserCreation userCreation){
+        UserDTO user=this.service.creaUser(userCreation);
+        return ResponseEntity.status(201).body(user);
+    }
+    @PostMapping("/create-user")
+    @PreAuthorize("hasRole('admin')")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserCreation userCreation){
-        UserDTO user=this.service.handler(userCreation);
+        UserDTO user=this.service.orchestrator(userCreation);
         return ResponseEntity.status(201).body(user);
     }
 }
