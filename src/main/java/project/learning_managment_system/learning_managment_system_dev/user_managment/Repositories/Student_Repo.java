@@ -3,5 +3,8 @@ package project.learning_managment_system.learning_managment_system_dev.user_man
 import org.springframework.data.jpa.repository.JpaRepository;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Student;
 
+import java.util.Optional;
+
 public interface Student_Repo extends JpaRepository<Student,Integer> {
+    Optional<Student> findByMail(String email);
 }

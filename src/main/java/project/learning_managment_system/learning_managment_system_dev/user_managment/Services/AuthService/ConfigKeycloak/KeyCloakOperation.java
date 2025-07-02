@@ -108,9 +108,7 @@ public class KeyCloakOperation {
         ResponseEntity<List> response = restTemplate.exchange(url, HttpMethod.GET, entity, List.class);
         for (Object clientObj : response.getBody()) {
             Map<String, Object> client = (Map<String, Object>) clientObj;
-            System.out.println("Client: " + client);
             if (client.get("clientId").equals(clientId)) {
-                System.out.println("MATCHED clientId: " + client.get("clientId") + " UUID: " + client.get("id"));
                 return (String) client.get("id");
             }
         }

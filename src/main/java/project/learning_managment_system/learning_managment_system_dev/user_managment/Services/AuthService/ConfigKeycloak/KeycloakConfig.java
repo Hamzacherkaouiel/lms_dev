@@ -18,8 +18,9 @@ public class KeycloakConfig {
 
     @Value("${keycloak.admin.password}")
     private String adminPassword;
+    @Autowired
+    public RestTemplate restTemplate;
 
-    public RestTemplate restTemplate=new RestTemplate();
     public String getAdminAccessToken() {
         String url = keycloakBaseUrl + "/realms/master/protocol/openid-connect/token";
 
