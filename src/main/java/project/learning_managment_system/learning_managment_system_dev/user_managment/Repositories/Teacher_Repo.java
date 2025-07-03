@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface Teacher_Repo extends JpaRepository<Teacher,Integer> {
     Optional<Teacher> findByMail(String email);
+    void deleteByMail(String mail);
 }
