@@ -3,8 +3,7 @@ package project.learning_managment_system.learning_managment_system_dev.user_man
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserCreation;
-import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserDTO;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.*;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Admin;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Student;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Teacher;
@@ -17,15 +16,10 @@ import project.learning_managment_system.learning_managment_system_dev.user_mana
 import project.learning_managment_system.learning_managment_system_dev.user_managment.mappers.Implementation.Admin_Mapper;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.mappers.Implementation.Student_Mapper;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.mappers.Implementation.Teacher_Mapper;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.mappers.Mapper_Interface;
 
 @Service
 public class Authentication_Service {
-    @Autowired
-    public Student_Mapper studentMapper;
-    @Autowired
-    public Admin_Mapper adminMapper;
-    @Autowired
-    public Teacher_Mapper teacherMapper;
     @Autowired
     public Student_Repo studentRepo;
     @Autowired
@@ -34,6 +28,7 @@ public class Authentication_Service {
     public Admin_Repo adminRepo;
     @Autowired
     public KeyCloakService keyCloakService;
+    public Mapper_Interface mapper;
     private BCryptPasswordEncoder bCrypt=new BCryptPasswordEncoder(12);
 
     public UserDTO orchestrator(UserCreation userCreation){
@@ -41,32 +36,36 @@ public class Authentication_Service {
                 ||userCreation.getFirstname()==null||userCreation.getLastname()==null){
             throw  new InvalidUser("INVALID USER TO CREATE");
         }
+        System.out.println(userCreation.getRole());
         if(userCreation.getRole().equals("student")){
             return this.creaUser(userCreation);
         }
         return this.createPrivateUser(userCreation);
     }
     public UserDTO creaUser(UserCreation userCreation)  {
-
+             this.mapper=new Student_Mapper();
              userCreation.setRole("student");
              this.keyCloakService.createUser(userCreation);
              userCreation.setPassword(this.bCrypt.encode(userCreation.getPassword()));
-             Student student=this.studentRepo.save(this.studentMapper.Creation(userCreation));
-             return this.studentMapper.toDto(student);
+             Student student=this.studentRepo.save((Student)this.mapper.Creation(userCreation));
+             return (Student_Dto) this.mapper.toDto(student);
 
     }
     public UserDTO createPrivateUser(UserCreation userCreation){
 
             this.keyCloakService.createUser(userCreation);
+
             userCreation.setPassword(this.bCrypt.encode(userCreation.getPassword()));
         return switch (userCreation.getRole()) {
             case "admin" -> {
-                Admin admin = this.adminRepo.save(this.adminMapper.Creation(userCreation));
-                yield this.adminMapper.toDto(admin);
+                this.mapper=new Admin_Mapper();
+                Admin admin = this.adminRepo.save((Admin)this.mapper.Creation(userCreation));
+                yield (Admin_Dto)this.mapper.toDto(admin);
             }
             case "teacher" -> {
-                Teacher teacher = this.teacherRepo.save(this.teacherMapper.Creation(userCreation));
-                yield this.teacherMapper.toDto(teacher);
+                this.mapper=new Teacher_Mapper();
+                Teacher teacher = this.teacherRepo.save((Teacher)this.mapper.Creation(userCreation));
+                yield (Teacher_Dto)this.mapper.toDto(teacher);
             }
             default -> throw new RoleNotFound("ROLE NOTE FOUND");
         };

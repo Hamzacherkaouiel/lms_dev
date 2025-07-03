@@ -12,9 +12,6 @@ public class Consummer {
     KeycloakSync sync;
     @KafkaListener(topics = "keycloak", groupId = "keycloak-id")
     public void consumme(UserCreation userCreation){
-        System.out.println("USEERRRRRRRRRRRR"+userCreation.getMail());
-        System.out.println("USEERRRRRRRRRRRR"+userCreation.getOperation());
-
         this.sync.syncUser(userCreation);
     }
 

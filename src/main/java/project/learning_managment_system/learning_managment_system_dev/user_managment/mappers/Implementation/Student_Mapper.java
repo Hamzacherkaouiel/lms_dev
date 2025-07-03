@@ -12,7 +12,8 @@ public class Student_Mapper implements Mapper_Interface<Student_Dto, Student> {
         return Student_Dto.builder()
                 .id(student.getId())
                 .firstname(student.getFirstname())
-                .lastname(student.getLastname())                .mail(student.getMail())
+                .lastname(student.getLastname())
+                .mail(student.getMail())
                 .progress(student.getProgress())
                 .build();
     }
