@@ -13,6 +13,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Student_Dto extends UserDTO{
 
-    public Integer progress;
+    public Integer progress=0;
 
 }

@@ -3,15 +3,20 @@ package project.learning_managment_system.learning_managment_system_dev.user_man
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler({InvalidUser.class})
-    public ResponseEntity<String> handleUserCreationException(Invalid_Creation e){
+    public ResponseEntity<String> handleUserCreationException(InvalidUser e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
@@ -38,8 +43,29 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleDataAccess(DataAccessException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur d'accès à la base de données");
     }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationInput(MethodArgumentNotValidException ex){
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneric(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne : " + ex.getMessage());
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleUniqueConstraintViolation(DataIntegrityViolationException ex) {
+        String message = "ERROR: ";
+        if (ex.getRootCause() != null && ex.getRootCause().getMessage() != null) {
+            if (ex.getRootCause().getMessage().contains("email")) {
+                message += "MAIL ALREADY EXIST";
+            } else if (ex.getRootCause().getMessage().contains("password")) {
+                message += "PASSWORD ALREADY EXIST";
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 }

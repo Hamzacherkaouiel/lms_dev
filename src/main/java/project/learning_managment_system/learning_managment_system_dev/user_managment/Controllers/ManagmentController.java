@@ -1,5 +1,6 @@
 package project.learning_managment_system.learning_managment_system_dev.user_managment.Controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,7 +31,7 @@ public abstract class ManagmentController<T> {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('admin','teacher','student')")
-    public ResponseEntity<T> updateUser(@RequestBody T user,@PathVariable int id){
+    public ResponseEntity<T> updateUser(@Valid @RequestBody T user, @PathVariable int id){
         return ResponseEntity.ok(this.serviceUser.updateUser(user,id));
     }
     @DeleteMapping("/{id}")
