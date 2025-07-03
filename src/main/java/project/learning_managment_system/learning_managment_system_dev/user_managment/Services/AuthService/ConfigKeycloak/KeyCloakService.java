@@ -9,8 +9,8 @@ public class KeyCloakService {
     @Autowired
     public KeyCloakOperation keyCloakOperation;
 
-    public void createUser(UserCreation user) {
-        String user_id=this.keyCloakOperation.createUserInKeycloak2(user.getMail(),user.getPassword(),user.getFirstname(),user.getLastname());
+    public void createUser(UserCreation user)  {
+        String user_id=this.keyCloakOperation.createUserInKeycloak(user.getMail(),user.getPassword(),user.getFirstname(),user.getLastname());
         this.keyCloakOperation.assignRole(user.getRole(),user_id);
     }
 }

@@ -11,6 +11,7 @@ import project.learning_managment_system.learning_managment_system_dev.user_mana
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserCreation;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Student;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Teacher;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.UserNotFound;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.KafkaConfig.Producer;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Student_Repo;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Teacher_Repo;
@@ -43,12 +44,12 @@ public class ServiceTeacher implements ServiceUser<Teacher_Dto> {
     public Teacher_Dto getSingleUser(int id) {
         return this.teacherRepo.findById(id)
                 .map(teacherMapper::toDto)
-                .orElseThrow(()->new IllegalArgumentException("TEACHER NOT FOUND"));
+                .orElseThrow(()->new UserNotFound("USER NOT FOUND"));
     }
 
     @Override
     public Teacher_Dto updateUser(Teacher_Dto user, int id) {
-        Teacher teacher =this.teacherRepo.findById(id).orElseThrow(()->new IllegalArgumentException("TEACHER NOT FOUND"));
+        Teacher teacher =this.teacherRepo.findById(id).orElseThrow(()->new UserNotFound("TEACHER NOT FOUND"));
         this.teacherMapper.updateEntityFromDto(user,teacher);
         this.producer.syncData(this.mapTo(user));
         return this.teacherMapper.toDto(this.teacherRepo.save(teacher));
@@ -65,14 +66,14 @@ public class ServiceTeacher implements ServiceUser<Teacher_Dto> {
                     .build());
         }
         else {
-            throw  new IllegalArgumentException("USER NOT FOUND FOR ID:"+id);
+            throw  new UserNotFound("USER NOT FOUND FOR ID"+id);
         }
     }
     @Override
     public Teacher_Dto getMyProfile(Jwt token) {
         JwtExtractor jwtExtractor = new JwtExtractor();
         return this.teacherRepo.findByMail(jwtExtractor.extractClaim(token, "preferred_username"))
-                .map(teacherMapper::toDto).orElseThrow(() -> new IllegalArgumentException("TEACHER NOT FOUND"));
+                .map(teacherMapper::toDto).orElseThrow(() -> new UserNotFound("TEACHER NOT FOUND"));
     }
 
     @Override

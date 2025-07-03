@@ -9,6 +9,7 @@ import project.learning_managment_system.learning_managment_system_dev.Config.Jw
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.Student_Dto;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserCreation;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Student;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.UserNotFound;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.KafkaConfig.Producer;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Student_Repo;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.ManagementService.ServiceUser;
@@ -39,12 +40,12 @@ public class ServiceStudent implements ServiceUser<Student_Dto> {
     public Student_Dto getSingleUser(int id) {
         return this.studentRepo.findById(id)
                 .map(studentMapper::toDto)
-                .orElseThrow(()->new IllegalArgumentException("STUDENT NOT FOUND"));
+                .orElseThrow(()->new UserNotFound("USER NOT FOUND"));
     }
 
     @Override
     public Student_Dto updateUser(Student_Dto user, int id) {
-        Student student =this.studentRepo.findById(id).orElseThrow(()->new IllegalArgumentException("STUDENT NOT FOUND"));
+        Student student =this.studentRepo.findById(id).orElseThrow(()->new UserNotFound("STUDENT NOT FOUND"));
         this.studentMapper.updateEntityFromDto(user,student);
         this.producer.syncData(this.mapTo(user));
         return this.studentMapper.toDto(this.studentRepo.save(student));
@@ -61,7 +62,7 @@ public class ServiceStudent implements ServiceUser<Student_Dto> {
                     .build());
         }
         else {
-            throw  new IllegalArgumentException("USER NOT FOUND FOR ID:"+id);
+            throw  new UserNotFound("USER NOT FOUND");
         }
     }
 
@@ -69,7 +70,7 @@ public class ServiceStudent implements ServiceUser<Student_Dto> {
     public Student_Dto getMyProfile(Jwt token) {
         JwtExtractor jwtExtractor = new JwtExtractor();
         return this.studentRepo.findByMail(jwtExtractor.extractClaim(token, "preferred_username"))
-                .map(studentMapper::toDto).orElseThrow(() -> new IllegalArgumentException("STUDENT NOT FOUND"));
+                .map(studentMapper::toDto).orElseThrow(() -> new UserNotFound("STUDENT NOT FOUND"));
     }
 
     @Override
