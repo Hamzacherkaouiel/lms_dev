@@ -12,6 +12,8 @@ import project.learning_managment_system.learning_managment_system_dev.user_mana
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Admin;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Student;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Teacher;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.InvalidUser;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.UserNotFound;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.KafkaConfig.Producer;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Admin_Repo;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Teacher_Repo;
@@ -42,14 +44,16 @@ public class ServiceAdmin implements ServiceUser<Admin_Dto> {
     public Admin_Dto getSingleUser(int id) {
         return this.adminRepo.findById(id)
                 .map(adminMapper::toDto)
-                .orElseThrow(()->new IllegalArgumentException("ADMIN NOT FOUND"));    }
+                .orElseThrow(()->new UserNotFound("USER NOT FOUND"));
+    }
 
     @Override
     public Admin_Dto updateUser(Admin_Dto user, int id) {
-        Admin admin =this.adminRepo.findById(id).orElseThrow(()->new IllegalArgumentException("ADMIN NOT FOUND"));
+        Admin admin =this.adminRepo.findById(id).orElseThrow(()->new UserNotFound("USER NOT FOUND"));
         this.adminMapper.updateEntityFromDto(user,admin);
         this.producer.syncData(this.mapTo(user));
-        return this.adminMapper.toDto(this.adminRepo.save(admin));    }
+        return this.adminMapper.toDto(this.adminRepo.save(admin));
+    }
 
     @Override
     public void deleteUser(int id) {
@@ -62,14 +66,14 @@ public class ServiceAdmin implements ServiceUser<Admin_Dto> {
                     .build());
         }
         else {
-            throw  new IllegalArgumentException("USER NOT FOUND FOR ID:"+id);
+            throw  new UserNotFound("USER NOT FOUND");
         }
     }
     @Override
     public Admin_Dto getMyProfile(Jwt token) {
         JwtExtractor jwtExtractor = new JwtExtractor();
         return this.adminRepo.findByMail(jwtExtractor.extractClaim(token, "preferred_username"))
-                .map(adminMapper::toDto).orElseThrow(() -> new IllegalArgumentException("ADMIN NOT FOUND"));
+                .map(adminMapper::toDto).orElseThrow(() -> new UserNotFound("ADMIN NOT FOUND"));
     }
 
     @Override
@@ -96,6 +100,9 @@ public class ServiceAdmin implements ServiceUser<Admin_Dto> {
 
     @Override
     public void updatePassword(UserCreation userCreation, int id) {
+        if(userCreation.getMail()==null){
+            throw  new InvalidUser("YOU MUST SEND THE MAIL OF USER");
+        }
         userCreation.setId(id);
         this.adminRepo.findById(id)
                 .ifPresent(user->{

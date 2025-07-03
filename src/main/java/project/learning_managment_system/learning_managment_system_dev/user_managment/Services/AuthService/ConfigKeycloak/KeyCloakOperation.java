@@ -4,9 +4,10 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.Invalid_Creation;
+
 import java.util.ArrayList;
 import java.util.List;
 @Component
@@ -17,7 +18,7 @@ public class KeyCloakOperation {
     private String clientId;
     @Value("${keycloak.realm}")
     private String realm;
-    public String createUserInKeycloak2(String email, String password,String firstname,String lastname ){
+    public String createUserInKeycloak(String email, String password,String firstname,String lastname ){
         UserRepresentation userRepresentation=this.mapToUser(email
         ,firstname,lastname
         );

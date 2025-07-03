@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserCreation;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserDTO;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.AuthService.Authentication_Service;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.Invalid_Creation;
 
 @RestController
 @RequestMapping("/sign")
@@ -17,7 +18,7 @@ public class AuthController {
     @Autowired
     public Authentication_Service service;
     @PostMapping("/")
-    public ResponseEntity<UserDTO> createStudent(@RequestBody UserCreation userCreation){
+    public ResponseEntity<UserDTO> createStudent(@RequestBody UserCreation userCreation) throws Invalid_Creation {
         UserDTO user=this.service.creaUser(userCreation);
         return ResponseEntity.status(201).body(user);
     }
