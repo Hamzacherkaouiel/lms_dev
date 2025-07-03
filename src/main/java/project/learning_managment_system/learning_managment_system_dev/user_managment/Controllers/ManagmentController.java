@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserCreation;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.ManagementService.ServiceUser;
 
 import java.util.List;
@@ -33,8 +34,22 @@ public abstract class ManagmentController<T> {
         return ResponseEntity.ok(this.serviceUser.updateUser(user,id));
     }
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('admin')")
+    @PreAuthorize("hasRole('admin')")
     public ResponseEntity deleteUser(@PathVariable int id){
+        this.serviceUser.deleteUser(id);
         return ResponseEntity.status(204).build();
     }
+    @PutMapping("/{id}/password")
+    @PreAuthorize("hasAnyRole('admin','teacher','student')")
+    public ResponseEntity<String> updatePassword(@PathVariable int id,@RequestBody UserCreation user){
+        this.serviceUser.updatePassword(user,id);
+        return ResponseEntity.ok("PASSWORD UPDATED");
+    }
+    @DeleteMapping("/profile")
+    @PreAuthorize("hasAnyRole('admin','teacher','student')")
+    public ResponseEntity deleteProfile(@AuthenticationPrincipal Jwt jwt){
+        this.serviceUser.deleteMyProfile(jwt);
+        return ResponseEntity.status(204).build();
+    }
+
 }

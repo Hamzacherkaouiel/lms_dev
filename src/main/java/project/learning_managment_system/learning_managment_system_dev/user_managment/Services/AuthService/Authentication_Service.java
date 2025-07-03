@@ -44,35 +44,28 @@ public class Authentication_Service {
         return this.createPrivateUser(userCreation);
     }
     public UserDTO creaUser(UserCreation userCreation)  {
-         try {
              userCreation.setRole("student");
              this.keyCloakService.createUser(userCreation);
              userCreation.setPassword(this.bCrypt.encode(userCreation.getPassword()));
              Student student=this.studentRepo.save(this.studentMapper.Creation(userCreation));
              return this.studentMapper.toDto(student);
-         }
-         catch (Assign_Exception | Role_Exception | ClientUIID_Exception e){
-             throw  new IllegalArgumentException(e.getMessage());
-         }
+
     }
     public UserDTO createPrivateUser(UserCreation userCreation){
 
-        try {
             this.keyCloakService.createUser(userCreation);
             userCreation.setPassword(this.bCrypt.encode(userCreation.getPassword()));
-            switch (userCreation.getRole()){
-                case "admin":
-                    Admin admin=this.adminRepo.save(this.adminMapper.Creation(userCreation));
-                    return this.adminMapper.toDto(admin);
-                case "teacher":
-                    Teacher teacher=this.teacherRepo.save(this.teacherMapper.Creation(userCreation));
-                    return this.teacherMapper.toDto(teacher);
-                default:
-                    return null;
+        return switch (userCreation.getRole()) {
+            case "admin" -> {
+                Admin admin = this.adminRepo.save(this.adminMapper.Creation(userCreation));
+                yield this.adminMapper.toDto(admin);
             }
-        }
-        catch (Assign_Exception | Role_Exception | ClientUIID_Exception e){
-            throw  new IllegalArgumentException(e.getMessage());
-        }
+            case "teacher" -> {
+                Teacher teacher = this.teacherRepo.save(this.teacherMapper.Creation(userCreation));
+                yield this.teacherMapper.toDto(teacher);
+            }
+            default -> null;
+        };
+
     }
 }

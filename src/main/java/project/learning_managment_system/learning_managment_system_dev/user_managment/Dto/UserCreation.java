@@ -15,5 +15,5 @@ public class UserCreation extends UserDTO{
     private String password;
     private String speciality;
     private String role="student";
-
+    private String operation;
 }

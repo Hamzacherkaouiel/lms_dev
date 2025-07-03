@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.Student_Dto;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.Teacher_Dto;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserCreation;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.KafkaConfig.Producer;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.ManagementService.ServiceImpl.ServiceStudent;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.ManagementService.ServiceImpl.ServiceTeacher;
@@ -16,22 +17,34 @@ import project.learning_managment_system.learning_managment_system_dev.user_mana
 @RequestMapping("/Teacher")
 public class TeacherController extends ManagmentController<Teacher_Dto> {
     @Autowired
-    Producer producer;
+    public Producer producer;
     public TeacherController(ServiceTeacher serviceTeacher){
         this.serviceUser=serviceTeacher;
     }
 
     @Override
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     public ResponseEntity<Teacher_Dto> updateUser(@RequestBody Teacher_Dto user, int id){
-        this.producer.syncData(user);
         return super.updateUser(user,id);
     }
     @Override
     @GetMapping("/profile")
-    @PreAuthorize("hasAnyRole('teacher')")
+    @PreAuthorize("hasRole('teacher')")
         public ResponseEntity<Teacher_Dto> getProfile(@AuthenticationPrincipal Jwt jwt){
         return super.getProfile(jwt);
     }
+    @Override
+    @PutMapping("/{id}/password")
+    @PreAuthorize("hasRole('teacher')")
+    public ResponseEntity<String> updatePassword(@PathVariable int id,@RequestBody UserCreation user){
+        return super.updatePassword(id,user);
+    }
+    @Override
+    @DeleteMapping("/profile")
+    @PreAuthorize("hasRole('teacher')")
+    public ResponseEntity deleteProfile(@AuthenticationPrincipal Jwt jwt){
+        return super.deleteProfile(jwt);
+    }
+
 }
