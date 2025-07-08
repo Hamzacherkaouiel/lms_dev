@@ -9,15 +9,19 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Modules {
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "module_id")
-    public int module_id;
+    public int id;
     public String title;
     @ManyToOne
     @JoinColumn(name = "course_id",nullable = false)
     public Course course;
-    @OneToMany(mappedBy = "modules")
+    @OneToMany(mappedBy = "module")
     public List<Lessons> lessons;
+
+
+
 
 }

@@ -15,6 +15,7 @@ public class Enrollemnt_Controller {
 
     public Enrollemnt_Controller(Service_Enrollemnt service){
         this.serviceEnrollemnt=service;
+
     }
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('student','teacher')")

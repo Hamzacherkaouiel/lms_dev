@@ -1,26 +1,19 @@
 package project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.ws.rs.NotFoundException;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Course_Exception;
+import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Enrollemnts_Exception;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Lessons_Exception;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Module_Exception;
-import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.InvalidUser;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.RoleNotFound;
-import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.UserNotFound;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalCourseExceptionHandler {
     @ExceptionHandler({Course_Exception.class})
     public ResponseEntity<String> handleCourseException(Course_Exception e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -29,6 +22,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Lessons_Exception.class})
     public ResponseEntity<String> handleLessonsException(Lessons_Exception e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
+    }
+    @ExceptionHandler({Enrollemnts_Exception.class})
+    public ResponseEntity<String> handleEnrollemntException(Enrollemnts_Exception e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
     @ExceptionHandler({Module_Exception.class})

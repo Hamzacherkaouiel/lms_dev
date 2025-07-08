@@ -12,10 +12,15 @@ import project.learning_managment_system.learning_managment_system_dev.user_mana
 import project.learning_managment_system.learning_managment_system_dev.user_managment.KafkaConfig.Producer;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.ManagementService.ServiceImpl.ServiceStudent;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/Student")
 public class StudentController extends ManagmentController<Student_Dto>{
+    public ServiceStudent student;
+
     public StudentController(ServiceStudent serviceStudent){
+        this.student=serviceStudent;
         this.serviceUser=serviceStudent;
     }
     @Override
@@ -44,5 +49,9 @@ public class StudentController extends ManagmentController<Student_Dto>{
         return super.deleteProfile(jwt);
     }
 
+    @GetMapping("/not-enrolled/{courseId}")
+    public ResponseEntity<List<Student_Dto>> getNotEnrolledStudents(@PathVariable int courseId ){
+        return ResponseEntity.ok(this.student.getNotEnrolledStudents(courseId));
+    }
 
 }

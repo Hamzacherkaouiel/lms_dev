@@ -9,8 +9,8 @@ public class Mapper_Module implements Mapper_Interface<Modules_Dto, Modules> {
     public Modules_Dto toDto(Modules entity) {
         return Modules_Dto.builder()
                 .title(entity.getTitle())
-                .id(entity.getModule_id())
-                .course_id(entity.getCourse().getCourse_id())
+                .id(entity.getId())
+                .course_id(entity.getCourse().getId())
                 .build();
     }
 

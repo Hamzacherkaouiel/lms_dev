@@ -18,6 +18,7 @@ public class Service_Lessons implements Service_Interface<Lessons_Dto> {
     public Lessons_Repo lessonsRepo;
     public Service_Lessons(Lessons_Repo repo)
     {
+        this.mapperLessons=new Mapper_Lessons();
         this.lessonsRepo=repo;
     }
 
@@ -39,8 +40,8 @@ public class Service_Lessons implements Service_Interface<Lessons_Dto> {
     @Override
     public Lessons_Dto createData(Lessons_Dto data, int id) {
         Lessons lessons=this.mapperLessons.toEntity(data);
-        lessons.setModules(Modules.builder()
-                .module_id(id).build());
+        lessons.setModule(Modules.builder()
+                .id(id).build());
         return this.mapperLessons.toDto(this.lessonsRepo.save(lessons));
     }
 
@@ -57,7 +58,7 @@ public class Service_Lessons implements Service_Interface<Lessons_Dto> {
           this.lessonsRepo.deleteById(id);
     }
     public List<Lessons_Dto> getLessonsByModules(int id ){
-        return this.lessonsRepo.findByModules_Module_id(id)
+        return this.lessonsRepo.findByModule_Id(id)
                 .stream().map(mapperLessons::toDto)
                 .collect(Collectors.toList());
     }

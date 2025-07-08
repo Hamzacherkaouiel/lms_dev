@@ -10,7 +10,7 @@ public class Mapper_Lessons implements Mapper_Interface<Lessons_Dto,Lessons> {
         return Lessons_Dto.builder()
                 .description(entity.getDescription())
                 .id(entity.getLessons_id())
-                .module_id(entity.getModules().getModule_id())
+                .module_id(entity.getModule().getId())
                 .build();
     }
 
