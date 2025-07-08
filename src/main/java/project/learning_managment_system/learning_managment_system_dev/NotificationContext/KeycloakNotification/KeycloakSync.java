@@ -2,7 +2,6 @@ package project.learning_managment_system.learning_managment_system_dev.Notifica
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserCreation;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserDTO;
-import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.UserNotFound;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.UserNotFound;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.AuthService.ConfigKeycloak.KeycloakConfig;
 
 import java.util.List;
