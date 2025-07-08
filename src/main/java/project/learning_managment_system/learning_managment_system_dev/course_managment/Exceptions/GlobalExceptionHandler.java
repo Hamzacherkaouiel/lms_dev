@@ -1,4 +1,4 @@
-package project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions;
+package project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.NotFoundException;
@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Course_Exception;
+import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Lessons_Exception;
+import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Module_Exception;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.InvalidUser;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.RoleNotFound;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.UserNotFound;
@@ -18,26 +21,22 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler({InvalidUser.class})
-    public ResponseEntity<String> handleUserCreationException(InvalidUser e){
+    @ExceptionHandler({Course_Exception.class})
+    public ResponseEntity<String> handleCourseException(Course_Exception e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
-    @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<String> handleRoleKeycloak(NotFoundException e){
+    @ExceptionHandler({Lessons_Exception.class})
+    public ResponseEntity<String> handleLessonsException(Lessons_Exception e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
-    @ExceptionHandler({RoleNotFound.class})
-    public ResponseEntity<String> handleRoleException(RoleNotFound e){
+    @ExceptionHandler({Module_Exception.class})
+    public ResponseEntity<String> handleModulesException(RoleNotFound e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
-    @ExceptionHandler({UserNotFound.class})
-    public ResponseEntity<String> handleUserNotFoundException(UserNotFound e){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(e.getMessage());
-    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -46,29 +45,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleDataAccess(DataAccessException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur d'accès à la base de données");
     }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationInput(MethodArgumentNotValidException ex){
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneric(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne : " + ex.getMessage());
-    }
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleUniqueConstraintViolation(DataIntegrityViolationException ex) {
-        String message = "ERROR: ";
-        if (ex.getRootCause() != null && ex.getRootCause().getMessage() != null) {
-            if (ex.getRootCause().getMessage().contains("email")) {
-                message += "MAIL ALREADY EXIST";
-            } else if (ex.getRootCause().getMessage().contains("password")) {
-                message += "PASSWORD ALREADY EXIST";
-            }
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 }
