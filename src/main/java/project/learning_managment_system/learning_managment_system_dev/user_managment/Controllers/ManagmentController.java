@@ -40,10 +40,10 @@ public abstract class ManagmentController<T> {
         this.serviceUser.deleteUser(id);
         return ResponseEntity.status(204).build();
     }
-    @PutMapping("/{id}/password")
+    @PutMapping("/password")
     @PreAuthorize("hasAnyRole('admin','teacher','student')")
-    public ResponseEntity<String> updatePassword(@PathVariable int id,@RequestBody UserCreation user){
-        this.serviceUser.updatePassword(user,id);
+    public ResponseEntity<String> updatePassword(@AuthenticationPrincipal Jwt jwt, @RequestBody UserCreation user){
+        this.serviceUser.updatePassword(user,jwt);
         return ResponseEntity.ok("PASSWORD UPDATED");
     }
     @DeleteMapping("/profile")

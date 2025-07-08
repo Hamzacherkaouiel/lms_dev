@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserCreation;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserDTO;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.UserNotFound;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.AuthService.ConfigKeycloak.KeycloakConfig;
 
 import java.util.List;
@@ -45,20 +46,18 @@ public class KeycloakSync {
                 search(mail,0,1);
 
         if (users == null || users.isEmpty()) {
-            throw new RuntimeException("Aucun utilisateur trouvé avec l'e-mail : " + mail);
+            throw new UserNotFound("NO USER WITH THIS MAIL " + mail);
         }
         return users.getFirst();
     }
     private void updateUser(UserCreation userDTO){
-        try {
+
             UserRepresentation user = this.getUserByMail(userDTO.getMail());
             updateAttributes(userDTO, user);
             this.getKeycloakInstance().realm(realm)
                     .users().get(user.getId())
                     .update(user);
-        } catch (RuntimeException e) {
-            System.err.println("Erreur de synchronisation Keycloak: " + e.getMessage());
-        }
+
     }
 
 

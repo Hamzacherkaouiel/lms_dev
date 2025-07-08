@@ -99,12 +99,9 @@ public class ServiceAdmin implements ServiceUser<Admin_Dto> {
     }
 
     @Override
-    public void updatePassword(UserCreation userCreation, int id) {
-        if(userCreation.getMail()==null){
-            throw  new InvalidUser("YOU MUST SEND THE MAIL OF USER");
-        }
-        userCreation.setId(id);
-        this.adminRepo.findById(id)
+    public void updatePassword(UserCreation userCreation, Jwt jwt) {
+        JwtExtractor jwtExtractor = new JwtExtractor();
+        this.adminRepo.findByMail(jwtExtractor.extractClaim(jwt, "preferred_username"))
                 .ifPresent(user->{
                     user.setPassword(bCrypt.encode(userCreation.getPassword()));
                     this.adminRepo.save(user);
