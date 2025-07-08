@@ -8,10 +8,11 @@ public class Mapper_Course implements Mapper_Interface<Course_Dto, Course> {
     @Override
     public Course_Dto toDto(Course entity) {
         return Course_Dto.builder()
-                .id(entity.getCourse_id())
+                .id(entity.getId())
                 .title(entity.getTitle())
                 .description(entity.getDescription())
                 .capacity(entity.getCapacity())
+                .teacher_id(entity.getTeacher().getId())
                 .build();
     }
 

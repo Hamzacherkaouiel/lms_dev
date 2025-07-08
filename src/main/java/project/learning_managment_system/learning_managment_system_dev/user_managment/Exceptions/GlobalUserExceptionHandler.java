@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalUserExceptionHandler {
     @ExceptionHandler({InvalidUser.class})
     public ResponseEntity<String> handleUserCreationException(InvalidUser e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

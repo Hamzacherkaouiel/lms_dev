@@ -39,7 +39,7 @@ public class Service_Module implements Service_Interface<Modules_Dto> {
     public Modules_Dto createData(Modules_Dto data, int id) {
         Modules modules=this.mapperModule.toEntity(data);
         modules.setCourse(Course.builder()
-                        .course_id(id)
+                        .id(id)
                 .build());
         return this.mapperModule.toDto(this.modulesRepo.save(modules));
     }
@@ -57,7 +57,7 @@ public class Service_Module implements Service_Interface<Modules_Dto> {
         this.modulesRepo.deleteById(id);
     }
     public  List<Modules_Dto> getModulesByCourse(int id ){
-        return this.modulesRepo.findByCourse_Course_id(id)
+        return this.modulesRepo.findByCourse_Id(id)
                 .stream().map(mapperModule::toDto)
                 .collect(Collectors.toList());
     }

@@ -17,6 +17,6 @@ public class Lessons {
     public String description;
     @ManyToOne
     @JoinColumn(name = "module_id",nullable = false)
-    public Modules  modules;
+    public Modules  module;
 
 }

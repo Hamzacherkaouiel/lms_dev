@@ -106,4 +106,9 @@ public class ServiceStudent implements ServiceUser<Student_Dto> {
                 });
         this.producer.syncData(userCreation);
     }
+    public List<Student_Dto> getNotEnrolledStudents(int courseId){
+        return this.studentRepo.findStudentsNotEnrolledInCourse(courseId)
+                .stream().map(studentMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }

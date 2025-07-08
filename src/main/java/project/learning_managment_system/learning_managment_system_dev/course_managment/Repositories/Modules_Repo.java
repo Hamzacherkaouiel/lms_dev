@@ -7,6 +7,6 @@ import project.learning_managment_system.learning_managment_system_dev.course_ma
 import java.util.List;
 
 public interface Modules_Repo extends JpaRepository<Modules,Integer> {
-    List<Modules> findByCourse_Course_id(int id);
+    List<Modules> findByCourse_Id(int id);
 
 }

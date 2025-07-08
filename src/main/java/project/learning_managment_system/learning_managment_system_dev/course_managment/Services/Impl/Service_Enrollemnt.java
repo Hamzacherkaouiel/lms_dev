@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Dto.Course_Dto;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Entities.Course;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Entities.Enrollements;
+import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Enrollemnts_Exception;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Mappers.Impl.Mapper_Course;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Mappers.Mapper_Interface;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Repositories.Enrollemnt_Repo;
@@ -28,10 +29,13 @@ public class Service_Enrollemnt {
                 .collect(Collectors.toList());
     }
     public Enrollements createSingleEnrollement(int studentId,int courseId){
+        if(this.enrollemntRepo.existsByStudent_IdAndCourse_Id(studentId,courseId)){
+            throw  new Enrollemnts_Exception("Student Already enrollet by this course");
+        }
         Enrollements enrollements= Enrollements.builder()
                 .enrollmentDate(LocalDate.now())
                 .course(Course.builder()
-                        .course_id(courseId)
+                        .id(courseId)
                         .build())
                 .student(Student.builder()
                         .id(studentId)
@@ -42,16 +46,20 @@ public class Service_Enrollemnt {
     public List<Enrollements> createMultipleEnrollemnts(int courseId, List<Integer> students){
         List<Enrollements> enrollements=new ArrayList<>();
         students.forEach(id->{
-            Enrollements element=Enrollements.builder()
-                    .enrollmentDate(LocalDate.now())
-                    .course(Course.builder()
-                            .course_id(courseId)
-                            .build())
-                    .student(Student.builder()
-                            .id(id)
-                            .build())
-                    .build();
-            enrollements.add(element);
+            if(!this.enrollemntRepo.existsByStudent_IdAndCourse_Id(id,courseId)) {
+
+
+                Enrollements element = Enrollements.builder()
+                        .enrollmentDate(LocalDate.now())
+                        .course(Course.builder()
+                                .id(courseId)
+                                .build())
+                        .student(Student.builder()
+                                .id(id)
+                                .build())
+                        .build();
+                enrollements.add(element);
+            }
 
         });
         return this.enrollemntRepo.saveAll(enrollements);

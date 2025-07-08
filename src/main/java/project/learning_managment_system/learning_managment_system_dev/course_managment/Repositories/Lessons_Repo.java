@@ -7,6 +7,6 @@ import project.learning_managment_system.learning_managment_system_dev.course_ma
 import java.util.List;
 
 public interface Lessons_Repo extends JpaRepository<Lessons,Integer> {
-    List<Lessons> findByModules_Module_id(int id);
+    List<Lessons> findByModule_Id(int id); // doit refléter EXACTEMENT le nom du champ Java
 
 }
