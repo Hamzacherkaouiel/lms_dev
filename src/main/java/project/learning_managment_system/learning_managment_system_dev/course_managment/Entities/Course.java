@@ -26,6 +26,8 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "id",nullable = false)
     public Teacher teacher;
+    @OneToMany(mappedBy = "course")
+    public List<Enrollements> enrollementsCourses;
 
 
 }
