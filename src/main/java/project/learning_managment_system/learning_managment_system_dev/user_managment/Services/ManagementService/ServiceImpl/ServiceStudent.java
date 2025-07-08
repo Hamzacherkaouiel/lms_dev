@@ -96,9 +96,10 @@ public class ServiceStudent implements ServiceUser<Student_Dto> {
     }
 
     @Override
-    public void updatePassword(UserCreation userCreation, int id) {
-        userCreation.setId(id);
-        this.studentRepo.findById(id)
+    public void updatePassword(UserCreation userCreation, Jwt jwt) {
+        JwtExtractor jwtExtractor = new JwtExtractor();
+        userCreation.setMail(jwtExtractor.extractClaim(jwt, "preferred_username"));
+        this.studentRepo.findByMail(jwtExtractor.extractClaim(jwt, "preferred_username"))
                 .ifPresent(user->{
                     user.setPassword(bCrypt.encode(userCreation.getPassword()));
                     this.studentRepo.save(user);

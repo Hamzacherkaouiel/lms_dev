@@ -13,5 +13,5 @@ public interface ServiceUser<T> {
     public T getMyProfile(Jwt token);
     public UserCreation mapTo(T user);
     public void deleteMyProfile(Jwt token);
-    public void updatePassword(UserCreation userCreation,int id);
+    public void updatePassword(UserCreation userCreation,Jwt jwt);
 }

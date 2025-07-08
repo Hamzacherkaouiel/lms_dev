@@ -50,10 +50,10 @@ public class AdminController extends ManagmentController<Admin_Dto> {
         return super.getProfile(jwt);
     }
     @Override
-    @PutMapping("/{id}/password")
+    @PutMapping("/password")
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<String> updatePassword(@PathVariable int id,@RequestBody UserCreation user){
-        return super.updatePassword(id,user);
+    public ResponseEntity<String> updatePassword(@AuthenticationPrincipal Jwt jwt,@RequestBody UserCreation user){
+        return super.updatePassword(jwt,user);
     }
     @Override
     @DeleteMapping("/profile")

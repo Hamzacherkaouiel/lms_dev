@@ -21,7 +21,7 @@ public class StudentController extends ManagmentController<Student_Dto>{
     @Override
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('admin') or hasRole('student')")
-    public ResponseEntity<Student_Dto> updateUser(@RequestBody Student_Dto user, int id){
+    public ResponseEntity<Student_Dto> updateUser(@RequestBody Student_Dto user,@PathVariable int id){
         return super.updateUser(user,id);
     }
     @Override
@@ -31,10 +31,10 @@ public class StudentController extends ManagmentController<Student_Dto>{
         return super.getProfile(jwt);
     }
     @Override
-    @PutMapping("/{id}/password")
+    @PutMapping("/password")
     @PreAuthorize("hasRole('student')")
-    public ResponseEntity<String> updatePassword(@PathVariable int id,@RequestBody UserCreation user){
-        return super.updatePassword(id,user);
+    public ResponseEntity<String> updatePassword(@AuthenticationPrincipal Jwt jwt,@RequestBody UserCreation user){
+        return super.updatePassword(jwt,user);
 
     }
     @Override

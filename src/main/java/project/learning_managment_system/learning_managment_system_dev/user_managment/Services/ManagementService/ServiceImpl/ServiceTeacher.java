@@ -99,11 +99,12 @@ public class ServiceTeacher implements ServiceUser<Teacher_Dto> {
     }
 
     @Override
-    public void updatePassword(UserCreation userCreation,int id) {
-        userCreation.setId(id);
-        this.teacherRepo.findById(id)
+    public void updatePassword(UserCreation userCreation,Jwt jwt) {
+        JwtExtractor jwtExtractor = new JwtExtractor();
+        this.teacherRepo.findByMail(jwtExtractor.extractClaim(jwt, "preferred_username"))
                 .ifPresent(user->{
                     user.setPassword(bCrypt.encode(userCreation.getPassword()));
+
                     this.teacherRepo.save(user);
                 });
         this.producer.syncData(userCreation);

@@ -36,7 +36,6 @@ public class Authentication_Service {
                 ||userCreation.getFirstname()==null||userCreation.getLastname()==null){
             throw  new InvalidUser("INVALID USER TO CREATE");
         }
-        System.out.println(userCreation.getRole());
         if(userCreation.getRole().equals("student")){
             return this.creaUser(userCreation);
         }
@@ -44,7 +43,6 @@ public class Authentication_Service {
     }
     public UserDTO creaUser(UserCreation userCreation)  {
              this.mapper=new Student_Mapper();
-             userCreation.setRole("student");
              this.keyCloakService.createUser(userCreation);
              userCreation.setPassword(this.bCrypt.encode(userCreation.getPassword()));
              Student student=this.studentRepo.save((Student)this.mapper.Creation(userCreation));
