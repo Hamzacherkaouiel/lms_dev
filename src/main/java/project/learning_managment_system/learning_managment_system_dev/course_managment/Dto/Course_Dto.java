@@ -13,4 +13,7 @@ public class Course_Dto {
     public String description;
     public int capacity;
     public int teacher_id;
+    public boolean isFull(){
+        return capacity==0;
+    }
 }

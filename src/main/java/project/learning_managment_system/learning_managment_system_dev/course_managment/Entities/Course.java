@@ -28,6 +28,9 @@ public class Course {
     public Teacher teacher;
     @OneToMany(mappedBy = "course")
     public List<Enrollements> enrollementsCourses;
+    public boolean isFull(){
+        return capacity==0;
+    }
 
 
 }

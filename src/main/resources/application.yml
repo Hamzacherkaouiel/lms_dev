@@ -17,6 +17,18 @@ spring:
         jwt:
           issuer-uri: http://localhost:8081/realms/hamza
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+  mail:
+    host: smtp.gmail.com
+    port: ${PORT_SMTP}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   kafka:
     consumer:
       group-id: keycloak-id
@@ -46,8 +58,11 @@ keycloak:
   admin:
     username: admin
     password: admin
+hamza:
+  address: hamza.cherkaoui1234@gmail.com
 
 server:
   port: 8082
+
 
 
