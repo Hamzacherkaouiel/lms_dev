@@ -36,6 +36,12 @@ public class Course_Controller {
         return ResponseEntity.status(201)
                 .body(this.serviceCourse.createData(courseDto,id));
     }
+    @PostMapping("/teacher/mail/{email}")
+    @PreAuthorize("hasRole('teacher')")
+    public ResponseEntity<Course_Dto> createCourseByMail(@RequestBody Course_Dto courseDto,@PathVariable String email){
+        return ResponseEntity.status(201)
+                .body(this.serviceCourse.createCourseByMail(courseDto,email));
+    }
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('teacher')")
     public ResponseEntity<Course_Dto> updateCourse(@RequestBody Course_Dto courseDto,@PathVariable int id){

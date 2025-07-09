@@ -9,6 +9,9 @@ import project.learning_managment_system.learning_managment_system_dev.course_ma
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Repositories.Course_Repo;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Services.Service_Interface;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Teacher;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.UserNotFound;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Teacher_Repo;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.ManagementService.ServiceImpl.ServiceTeacher;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +20,12 @@ import java.util.stream.Collectors;
 public class Service_Course implements Service_Interface<Course_Dto> {
     public Mapper_Interface<Course_Dto,Course> mapperInterface;
     public Course_Repo courseRepo;
+    public Teacher_Repo teacherRepo;
 
-    public Service_Course(Course_Repo repo){
+    public Service_Course(Course_Repo repo,Teacher_Repo service){
         mapperInterface=new Mapper_Course();
         courseRepo=repo;
+        this.teacherRepo=service;
     }
     @Override
     public List<Course_Dto> getAllData() {
@@ -61,6 +66,12 @@ public class Service_Course implements Service_Interface<Course_Dto> {
         return this.courseRepo.findByTeacher_Id(id)
                 .stream().map(mapperInterface::toDto)
                 .collect(Collectors.toList());
+    }
+    public Course_Dto createCourseByMail(Course_Dto data,String mail){
+        Teacher teacher=this.teacherRepo.findByMail(mail).orElseThrow(()->new UserNotFound("Teacher not found"));
+        Course course=this.mapperInterface.toEntity(data);
+        course.setTeacher(teacher);
+        return this.mapperInterface.toDto(this.courseRepo.save(course));
     }
 
 }

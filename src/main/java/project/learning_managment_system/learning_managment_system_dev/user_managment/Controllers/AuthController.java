@@ -17,6 +17,11 @@ public class AuthController {
     @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<UserDTO> createStudent(@Valid @RequestBody UserCreation userCreation) {
+        System.out.println(userCreation.getPassword());
+        System.out.println(userCreation.getRole());
+        System.out.println(userCreation.getFirstname());
+        System.out.println(userCreation.getLastname());
+        System.out.println(userCreation.getMail());
         UserDTO user=this.service.creaUser(userCreation);
         return ResponseEntity.status(201).body(user);
     }

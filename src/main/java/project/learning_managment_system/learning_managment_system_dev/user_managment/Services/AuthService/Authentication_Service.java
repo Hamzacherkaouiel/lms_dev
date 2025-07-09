@@ -37,6 +37,7 @@ public class Authentication_Service {
             throw  new InvalidUser("INVALID USER TO CREATE");
         }
         if(userCreation.getRole().equals("student")){
+            System.out.println(userCreation.getMail());
             return this.creaUser(userCreation);
         }
         return this.createPrivateUser(userCreation);

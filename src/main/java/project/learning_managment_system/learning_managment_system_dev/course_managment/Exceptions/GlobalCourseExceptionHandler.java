@@ -16,7 +16,7 @@ import project.learning_managment_system.learning_managment_system_dev.user_mana
 public class GlobalCourseExceptionHandler {
     @ExceptionHandler({Course_Exception.class})
     public ResponseEntity<String> handleCourseException(Course_Exception e){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
     @ExceptionHandler({Lessons_Exception.class})
@@ -41,10 +41,12 @@ public class GlobalCourseExceptionHandler {
     }
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<String> handleDataAccess(DataAccessException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur d'accès à la base de données");
+        System.out.println(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in the server");
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneric(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne : " + ex.getMessage());
+        System.out.println(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in the server");
     }
 }

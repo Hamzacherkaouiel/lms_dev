@@ -44,7 +44,13 @@ public class GlobalUserExceptionHandler {
     }
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<String> handleDataAccess(DataAccessException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur d'accès à la base de données");
+        System.out.println(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in the server");
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneric(Exception ex) {
+        System.out.println(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in the server");
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationInput(MethodArgumentNotValidException ex){
@@ -53,10 +59,6 @@ public class GlobalUserExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGeneric(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne : " + ex.getMessage());
     }
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleUniqueConstraintViolation(DataIntegrityViolationException ex) {
