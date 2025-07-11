@@ -62,8 +62,14 @@ public class Service_Course implements Service_Interface<Course_Dto> {
     public void deleteData(int id) {
          this.courseRepo.deleteById(id);
     }
-    public List<Course_Dto> getCourseByOwner(int id){
+    public List<Course_Dto> getCourseByOwnerId(int id){
         return this.courseRepo.findByTeacher_Id(id)
+                .stream().map(mapperInterface::toDto)
+                .collect(Collectors.toList());
+    }
+    public List<Course_Dto> getCourseByOwnerMail(String mail){
+        Teacher teacher=this.teacherRepo.findByMail(mail).orElseThrow(()->new UserNotFound("Teacher not found"));
+        return this.courseRepo.findByTeacher_Id(teacher.getId())
                 .stream().map(mapperInterface::toDto)
                 .collect(Collectors.toList());
     }

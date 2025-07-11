@@ -9,5 +9,6 @@ public interface Enrollemnt_Repo extends JpaRepository<Enrollements,Integer> {
     List<Enrollements> findByStudent_Id(int id);
     List<Enrollements> findByStudentIdAndCourseTeacherId(Long studentId, Long teacherId);
     boolean existsByStudent_IdAndCourse_Id(int idstudent,int idcourse);
+    void deleteByStudent_Id(int id);
 
 }

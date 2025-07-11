@@ -48,6 +48,12 @@ public class Service_Enrollemnt {
                 .stream().map(enrollements -> mapperCourse.toDto(enrollements.getCourse()))
                 .collect(Collectors.toList());
     }
+    public List<Course_Dto> getEnrollmentCoursesByMail(String mail) {
+        Student student=this.studentRepo.findByMail(mail).orElseThrow(()->new UserNotFound("Student not found"));
+        return this.enrollemntRepo.findByStudent_Id(student.getId())
+                .stream().map(enrollements -> mapperCourse.toDto(enrollements.getCourse()))
+                .collect(Collectors.toList());
+    }
     public Enrollements createSingleEnrollement(int studentId,int courseId){
         if(this.enrollemntRepo.existsByStudent_IdAndCourse_Id(studentId,courseId)){
             throw  new Enrollemnts_Exception("Student Already enrolled to this course");
@@ -84,10 +90,12 @@ public class Service_Enrollemnt {
         this.produceMultipleMail(enrollements);
         return this.enrollemntRepo.saveAll(enrollements);
     }
-    @Transactional
     public void deleteEnrollemnt(int id){
         this.enrollemntRepo.deleteById(id);
-
+    }
+    @Transactional
+    public void deleteEnrollemntByStudentId(int id){
+        this.enrollemntRepo.deleteByStudent_Id(id);
     }
     private void produceSingleMail(Enrollements enrollements){
 
