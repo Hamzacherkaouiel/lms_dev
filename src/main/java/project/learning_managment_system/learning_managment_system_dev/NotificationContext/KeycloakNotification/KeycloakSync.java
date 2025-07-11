@@ -77,6 +77,7 @@ public class KeycloakSync {
         newPassword.setValue(password);
         newPassword.setTemporary(false);
         userResource.resetPassword(newPassword);
+        System.out.println("password reset");
     }
     private void deleteUser(String mail){
         UserRepresentation userRepresentation=this.getUserByMail(mail);

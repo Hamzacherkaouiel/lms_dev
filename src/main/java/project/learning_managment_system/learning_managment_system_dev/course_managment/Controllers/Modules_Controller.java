@@ -3,9 +3,7 @@ package project.learning_managment_system.learning_managment_system_dev.course_m
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import project.learning_managment_system.learning_managment_system_dev.course_managment.Dto.Lessons_Dto;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Dto.Modules_Dto;
-import project.learning_managment_system.learning_managment_system_dev.course_managment.Services.Impl.Service_Lessons;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Services.Impl.Service_Module;
 
 import java.util.List;

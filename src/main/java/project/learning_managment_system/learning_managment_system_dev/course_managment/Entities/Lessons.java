@@ -18,5 +18,7 @@ public class Lessons {
     @ManyToOne
     @JoinColumn(name = "module_id",nullable = false)
     public Modules  module;
+    public String s3Url;
+    public String objectKey;
 
 }

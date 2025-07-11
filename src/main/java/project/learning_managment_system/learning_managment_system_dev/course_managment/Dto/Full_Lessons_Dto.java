@@ -7,8 +7,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Lessons_Dto {
+public class Full_Lessons_Dto {
     public int id;
     public String description;
     public int module_id;
+    public String s3Url;
+    public String objectKey;
 }
