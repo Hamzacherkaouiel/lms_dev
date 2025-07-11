@@ -50,8 +50,14 @@ public class StudentController extends ManagmentController<Student_Dto>{
     }
 
     @GetMapping("/not-enrolled/{courseId}")
+    @PreAuthorize("hasRole('teacher')")
     public ResponseEntity<List<Student_Dto>> getNotEnrolledStudents(@PathVariable int courseId ){
         return ResponseEntity.ok(this.student.getNotEnrolledStudents(courseId));
+    }
+    @GetMapping("/enrolled/{courseId}")
+    @PreAuthorize("hasRole('teacher')")
+    public ResponseEntity<List<Student_Dto>> getEnrolledStudents(@PathVariable int courseId ){
+        return ResponseEntity.ok(this.student.getEnrolledStudents(courseId));
     }
 
 }

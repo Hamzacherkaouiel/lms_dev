@@ -27,8 +27,13 @@ public class Course_Controller {
     }
     @GetMapping("/teacher/{id}")
     @PreAuthorize("hasRole('teacher')")
-    public ResponseEntity<List<Course_Dto>> getCourseByOwner(@PathVariable int id ){
-        return ResponseEntity.ok(this.serviceCourse.getCourseByOwner(id));
+    public ResponseEntity<List<Course_Dto>> getCourseByOwnerId(@PathVariable int id ){
+        return ResponseEntity.ok(this.serviceCourse.getCourseByOwnerId(id));
+    }
+    @GetMapping("/teacher/mail/{email}")
+    @PreAuthorize("hasRole('teacher')")
+    public ResponseEntity<List<Course_Dto>> getCourseByOwnerMail(@PathVariable String email ){
+        return ResponseEntity.ok(this.serviceCourse.getCourseByOwnerMail(email));
     }
     @PostMapping("/teacher/{id}")
     @PreAuthorize("hasRole('teacher')")

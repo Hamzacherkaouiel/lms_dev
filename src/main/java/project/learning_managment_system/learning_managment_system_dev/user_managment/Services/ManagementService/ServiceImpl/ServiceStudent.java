@@ -111,4 +111,9 @@ public class ServiceStudent implements ServiceUser<Student_Dto> {
                 .stream().map(studentMapper::toDto)
                 .collect(Collectors.toList());
     }
+    public List<Student_Dto> getEnrolledStudents(int courseId){
+        return this.studentRepo.findStudentsEnrolledInCourse(courseId)
+                .stream().map(studentMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }

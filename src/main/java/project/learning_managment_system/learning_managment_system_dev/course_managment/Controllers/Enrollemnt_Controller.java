@@ -15,12 +15,16 @@ public class Enrollemnt_Controller {
 
     public Enrollemnt_Controller(Service_Enrollemnt service){
         this.serviceEnrollemnt=service;
-
     }
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('student','teacher')")
     public ResponseEntity<List<Course_Dto>> getEnrolledCourse(@PathVariable int id){
         return ResponseEntity.ok(this.serviceEnrollemnt.getEnrollmentCourses(id));
+    }
+    @GetMapping("/mail/{email}")
+    @PreAuthorize("hasAnyRole('student','teacher')")
+    public ResponseEntity<List<Course_Dto>> getEnrolledCourseByMail(@PathVariable String email){
+        return ResponseEntity.ok(this.serviceEnrollemnt.getEnrollmentCoursesByMail(email));
     }
     @PostMapping("/{idcourse}/{idstudent}/single")
     @PreAuthorize("hasRole('teacher')")
@@ -38,6 +42,12 @@ public class Enrollemnt_Controller {
     @PreAuthorize("hasRole('teacher')")
     public ResponseEntity<Void> deleteEnrollement(@PathVariable int id){
         this.serviceEnrollemnt.deleteEnrollemnt(id);
+        return ResponseEntity.status(204).build();
+    }
+    @DeleteMapping("/student/{id}")
+    @PreAuthorize("hasRole('teacher')")
+    public ResponseEntity<Void> deleteEnrollementByStudentId(@PathVariable int id){
+        this.serviceEnrollemnt.deleteEnrollemntByStudentId(id);
         return ResponseEntity.status(204).build();
     }
 

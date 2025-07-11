@@ -13,5 +13,7 @@ public interface Student_Repo extends JpaRepository<Student,Integer> {
     void deleteByMail(String mail);
     @Query("SELECT s FROM Student s WHERE s.id NOT IN ( SELECT e.student.id FROM Enrollements e WHERE e.course.id = :courseId)")
     List<Student> findStudentsNotEnrolledInCourse(@Param("courseId") int courseId);
+    @Query("SELECT s FROM Student s WHERE s.id  IN ( SELECT e.student.id FROM Enrollements e WHERE e.course.id = :courseId)")
+    List<Student> findStudentsEnrolledInCourse(@Param("courseId") int courseId);
 
 }
