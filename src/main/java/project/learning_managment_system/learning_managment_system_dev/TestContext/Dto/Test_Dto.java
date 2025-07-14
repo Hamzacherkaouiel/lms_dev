@@ -1,6 +1,7 @@
 package project.learning_managment_system.learning_managment_system_dev.TestContext.Dto;
 
 import lombok.*;
+import project.learning_managment_system.learning_managment_system_dev.TestContext.Entities.Questions;
 
 import java.util.List;
 

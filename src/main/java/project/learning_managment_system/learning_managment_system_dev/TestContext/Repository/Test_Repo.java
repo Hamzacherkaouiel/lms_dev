@@ -4,7 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import project.learning_managment_system.learning_managment_system_dev.TestContext.Entities.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Test_Repo extends JpaRepository<Test,Integer> {
-    List<Test> findByCourse_Id(int id);
+    Optional<Test> findByCourse_Id(int id);
 }

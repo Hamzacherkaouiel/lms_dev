@@ -18,6 +18,7 @@ public class Questions {
     @Column(name = "questions_id")
     public int id;
     public String description;
+    public int scoreQuestion;
     @ManyToOne
     @JoinColumn(name = "quiz_id",nullable = false)
     public Test quiz;

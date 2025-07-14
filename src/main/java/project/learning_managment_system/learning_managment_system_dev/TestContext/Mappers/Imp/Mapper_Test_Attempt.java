@@ -19,15 +19,11 @@ public class Mapper_Test_Attempt implements Mapper_Interface<Test_Attempt_Dto, T
     public TestAttempt toEntity(Test_Attempt_Dto dto) {
         return TestAttempt.builder()
                 .message(dto.getMessage())
-                .score(dto.getScore())
-                .max_score(dto.getMax_score())
                 .build();
     }
 
     @Override
     public void updateEntity(Test_Attempt_Dto dto, TestAttempt entity) {
         entity.setMessage(dto.getMessage()!=null? dto.getMessage() : entity.getMessage());
-        entity.setScore(dto.getScore());
-        entity.setMax_score(dto.getMax_score());
     }
 }

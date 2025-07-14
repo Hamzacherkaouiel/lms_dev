@@ -12,5 +12,6 @@ import java.util.List;
 public class Questions_Dto {
     public int id;
     public String description;
+    public int scoreQuestion;
     public List<Answer_Dto> options;
 }

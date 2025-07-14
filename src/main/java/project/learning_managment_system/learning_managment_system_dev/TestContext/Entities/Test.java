@@ -21,7 +21,7 @@ public class Test {
     public String title;
     @OneToMany(mappedBy = "quiz")
     public List<Questions> questions;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "course_id",nullable = false)
     public Course course;
 }

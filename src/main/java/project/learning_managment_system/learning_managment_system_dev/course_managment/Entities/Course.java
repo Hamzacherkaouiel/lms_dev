@@ -2,6 +2,7 @@ package project.learning_managment_system.learning_managment_system_dev.course_m
 
 import jakarta.persistence.*;
 import lombok.*;
+import project.learning_managment_system.learning_managment_system_dev.TestContext.Entities.Test;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Teacher;
 
 import java.util.List;
@@ -28,6 +29,8 @@ public class Course {
     public Teacher teacher;
     @OneToMany(mappedBy = "course")
     public List<Enrollements> enrollementsCourses;
+    @OneToOne(mappedBy = "course")
+    public Test test;
     public boolean isFull(){
         return capacity==0;
     }
