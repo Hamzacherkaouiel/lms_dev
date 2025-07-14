@@ -16,7 +16,7 @@ public class TestAttempt_Controller {
     public TestAttempt_Controller(ServiceTestAttempt attempt){
         this.serviceTestAttempt=attempt;
     }
-    @GetMapping("/{email}")
+    @GetMapping("/{email}/student")
     @PreAuthorize("hasRole('student')")
     public ResponseEntity<List<Test_Attempt_Dto>> getAllAttemptions(@PathVariable String email ){
         return ResponseEntity.ok(this.serviceTestAttempt.getAllAttemptions(email));

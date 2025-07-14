@@ -9,6 +9,7 @@ import project.learning_managment_system.learning_managment_system_dev.TestConte
 import project.learning_managment_system.learning_managment_system_dev.TestContext.Services.ServiceTest;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/Test")
@@ -20,7 +21,9 @@ public class Test_Controller {
     @GetMapping("/{courseId}/course")
     @PreAuthorize("hasAnyRole('teacher','admin','student')")
     public ResponseEntity<Test_Dto> getTestByCourseId(@PathVariable int courseId){
-        return ResponseEntity.ok(this.serviceTest.getTestByCourseId(courseId));
+        Optional<Test_Dto> testDto = serviceTest.getTestByCourseId(courseId);
+        return testDto.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('teacher','admin','student')")

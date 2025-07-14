@@ -15,7 +15,7 @@ public class Answer_Controller {
     public Answer_Controller(ServiceAnswers answers){
         this.serviceAnswers=answers;
     }
-    @GetMapping("/{questionId}")
+    @GetMapping("/{questionId}/questions")
     @PreAuthorize("hasAnyRole('teacher','student','admin')")
     public ResponseEntity<List<Answer_Dto>> getOptionsByQuestion(@PathVariable int questionId){
         return ResponseEntity.ok(this.serviceAnswers.getOptionsBYQuestion(questionId));
@@ -30,7 +30,7 @@ public class Answer_Controller {
     public ResponseEntity<Answer_Dto> createAnswer(@RequestBody Answer_Dto answerDto,@PathVariable int id){
         return ResponseEntity.status(201).body(this.serviceAnswers.createAnswer(answerDto, id));
     }
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('teacher')")
     public ResponseEntity<Answer_Dto> updateAnswer(@RequestBody Answer_Dto answerDto,@PathVariable int id){
         return ResponseEntity.status(201).body(this.serviceAnswers.updateAnswer(answerDto, id));

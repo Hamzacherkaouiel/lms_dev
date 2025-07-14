@@ -53,11 +53,16 @@ public class ServiceTestAttempt {
         return this.mapperTestAttempt.toDto(this.testAttemptRepo.findById(id).orElseThrow(()->new Attemption_Exception("Attemption not found")));
     }
     public Test_Attempt_Dto createAttemption(int testId,String email ){
+        int max_score=0;
         TestAttempt testAttempt=new TestAttempt();
         Student student=this.studentRepo.findByMail(email).orElseThrow(()-> new UserNotFound("Student not found"));
         Test test =this.testRepo.findById(testId).orElseThrow(()-> new Test_Exception("Test not found"));
         testAttempt.setMessage("your score for "+test.getTitle()+":");
-        testAttempt.setMax_score(test.getQuestions().size());
+        List<Questions> questions=test.getQuestions();
+        for(int i=0;i<questions.size();i++){
+            max_score+=questions.get(i).getScoreQuestion();
+        }
+        testAttempt.setMax_score(max_score);
         testAttempt.setTest(test);
         testAttempt.setUserId(student.getId());
         return this.mapperTestAttempt.toDto(this.testAttemptRepo.save(testAttempt));
@@ -71,7 +76,7 @@ public class ServiceTestAttempt {
             Questions questions=this.questionsRepo.findById(questionId).orElseThrow(()->new Questions_Exception("Question not found "));
             AnswerOption answerOption=this.answerRepo.findById(optionId).orElseThrow(()->new Answer_Exception("Answer not found "));
             boolean isCorrect= answerOption.isIsfalse();
-            int score_question=isCorrect?questions.getScoreQuestion():0;
+            int score_question=!isCorrect?questions.getScoreQuestion():0;
             total_score+=score_question;
         }
         testAttempt.setScore(total_score);

@@ -9,6 +9,7 @@ public class Mapper_Answers implements Mapper_Interface<Answer_Dto, AnswerOption
     @Override
     public Answer_Dto toDto(AnswerOption entity) {
         return Answer_Dto.builder()
+                .id(entity.getId())
                 .answer(entity.getAnswer())
                 .isfalse(entity.isIsfalse())
                 .build();
@@ -17,6 +18,7 @@ public class Mapper_Answers implements Mapper_Interface<Answer_Dto, AnswerOption
     @Override
     public AnswerOption toEntity(Answer_Dto dto) {
         return AnswerOption.builder()
+
                 .answer(dto.getAnswer())
                 .isfalse(dto.isIsfalse())
                 .build();

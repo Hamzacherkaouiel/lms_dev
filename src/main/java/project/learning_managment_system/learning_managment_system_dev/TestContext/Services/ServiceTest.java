@@ -13,6 +13,7 @@ import project.learning_managment_system.learning_managment_system_dev.user_mana
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.UserNotFound;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Student_Repo;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,8 +31,8 @@ public class ServiceTest {
     public Test_Dto getTestById(int id){
         return this.mapperTest.toDto(this.testRepo.findById(id).orElseThrow(()->new Test_Exception("Test not found")));
     }
-    public Test_Dto getTestByCourseId(int id){
-        return this.mapperTest.toDto(this.testRepo.findByCourse_Id(id).orElseThrow(()->new Test_Exception("Test not found")));
+    public Optional<Test_Dto> getTestByCourseId(int id){
+        return this.testRepo.findByCourse_Id(id).map(mapperTest::toDto);
     }
 
     public Test_Dto createTest(Test_Dto test,int id){
