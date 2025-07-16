@@ -21,4 +21,5 @@ public class Lessons {
     public String s3Url;
     public String objectKey;
 
+
 }

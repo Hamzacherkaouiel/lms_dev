@@ -97,6 +97,7 @@ public class ServiceTeacher implements ServiceUser<Teacher_Dto> {
     @Override
     public void updatePassword(UserCreation userCreation,Jwt jwt) {
         JwtExtractor jwtExtractor = new JwtExtractor();
+
         System.out.println(userCreation.getPassword());
         System.out.println(jwtExtractor.extractClaim(jwt, "preferred_username"));
         this.teacherRepo.findByMail(jwtExtractor.extractClaim(jwt, "preferred_username"))
@@ -104,6 +105,7 @@ public class ServiceTeacher implements ServiceUser<Teacher_Dto> {
                     user.setPassword(bCrypt.encode(userCreation.getPassword()));
                     this.teacherRepo.save(user);
                     System.out.println("password updated");
+
                 });
         this.producer.syncData(userCreation);
     }
