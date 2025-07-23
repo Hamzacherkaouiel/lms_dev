@@ -1,4 +1,10 @@
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 5MB
+      max-file-size: 15MB
+      max-request-size: 20MB
   application:
     name: learning_managment_system_dev
   jpa:
@@ -6,6 +12,10 @@ spring:
       ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
   datasource:
     driver-class-name: org.postgresql.Driver
     username: ${DB_USER}
@@ -43,13 +53,26 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+cloud:
+  aws:
+    credentials:
+      access-key:
+      secret-key:
+    region:
+      static: us-east-1
+    stack:
+      auto: false
 
+application:
+  bucket:
+    name: course.videos.lms
 
 jwt:
   auth:
     converter:
       resource-id: lms-auth
       principle-attribute: preferred_username
+
 
 keycloak:
   realm: hamza

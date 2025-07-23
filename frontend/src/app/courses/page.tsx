@@ -18,30 +18,35 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { debounce } from '@/lib/utils'
-
+import {useRouter} from "next/navigation";
 export default function CoursesPage() {
+  const router=useRouter()
   const [courses, setCourses] = useState<Course[]>([])
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState<'all' | 'enrolled' | 'created'>('all')
-  const user = authService.getCurrentUser()
+  const role = authService.getUserRole()
+  const user=authService.getUserMail()
+  const firstname=authService.getFirstName()
+  const lastname=authService.getLastName()
 
   useEffect(() => {
+    if (authService.isTokenExpired()) router.push("/login")
     const fetchCourses = async () => {
       try {
         let coursesData: Course[] = []
         
-        if (user?.role === 'admin') {
+        if (role === 'admin') {
           // Admin can see all courses
           coursesData = await courseService.getAllCourses()
-        } else if (user?.role === 'teacher') {
+        } else if (role === 'teacher') {
           // Teacher can see all courses and their own courses
-          coursesData = await courseService.getAllCourses()
+          coursesData = await courseService.getCoursesByTeacherEmail(user)
         } else {
           // Student can see all courses (for browsing/enrollment)
-          coursesData = await courseService.getAllCourses()
+          coursesData = await courseService.getEnrolledCoursesByEmail(user)
         }
         
         setCourses(coursesData)
@@ -55,14 +60,12 @@ export default function CoursesPage() {
     }
 
     fetchCourses()
-  }, [user])
+  }, [role])
 
   const debouncedSearch = debounce((term: string) => {
     const filtered = courses.filter(course =>
       course.title.toLowerCase().includes(term.toLowerCase()) ||
-      course.description.toLowerCase().includes(term.toLowerCase()) ||
-      course.teacher.firstname.toLowerCase().includes(term.toLowerCase()) ||
-      course.teacher.lastname.toLowerCase().includes(term.toLowerCase())
+      course.description.toLowerCase().includes(term.toLowerCase())
     )
     setFilteredCourses(filtered)
   }, 300)
@@ -78,17 +81,7 @@ export default function CoursesPage() {
     setFilteredCourses(courses)
   }
 
-  const handleEnrollment = async (courseId: number) => {
-    try {
-      if (user?.role === 'student') {
-        await courseService.createEnrollment(courseId, user.id)
-        // Refresh courses or update state
-        alert('Successfully enrolled in the course!')
-      }
-    } catch (error) {
-      alert('Failed to enroll in the course')
-    }
-  }
+
 
   if (isLoading) {
     return (
@@ -110,11 +103,8 @@ export default function CoursesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Courses</h1>
-            <p className="text-gray-600 mt-1">
-              {user?.role === 'student' ? 'Browse and enroll in courses' : 'Manage your courses'}
-            </p>
           </div>
-          {user?.role === 'teacher' && (
+          {role === 'teacher' && (
             <Link href="/courses/create">
               <Button className="inline-flex items-center mt-4 sm:mt-0">
                 <PlusIcon className="h-4 w-4 mr-2" />
@@ -135,33 +125,7 @@ export default function CoursesPage() {
               className="pl-10"
             />
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant={filterType === 'all' ? 'default' : 'outline'}
-              onClick={() => handleFilterChange('all')}
-              size="sm"
-            >
-              All Courses
-            </Button>
-            {user?.role === 'student' && (
-              <Button
-                variant={filterType === 'enrolled' ? 'default' : 'outline'}
-                onClick={() => handleFilterChange('enrolled')}
-                size="sm"
-              >
-                Enrolled
-              </Button>
-            )}
-            {user?.role === 'teacher' && (
-              <Button
-                variant={filterType === 'created' ? 'default' : 'outline'}
-                onClick={() => handleFilterChange('created')}
-                size="sm"
-              >
-                My Courses
-              </Button>
-            )}
-          </div>
+
         </div>
 
         {/* Error Message */}
@@ -196,19 +160,16 @@ export default function CoursesPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex items-center text-sm text-gray-500">
-                      <UserIcon className="h-4 w-4 mr-2" />
-                      <span>{course.teacher.firstname} {course.teacher.lastname}</span>
-                    </div>
+
                     
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center text-gray-500">
                         <UsersIcon className="h-4 w-4 mr-1" />
-                        <span>{course.enrollementsCourses.length} students</span>
+                        <span> students</span>
                       </div>
                       <div className="flex items-center text-gray-500">
                         <BookOpenIcon className="h-4 w-4 mr-1" />
-                        <span>{course.modulesList.length} modules</span>
+                        <span> modules</span>
                       </div>
                     </div>
 
@@ -231,14 +192,6 @@ export default function CoursesPage() {
                           View Details
                         </Button>
                       </Link>
-                      {user?.role === 'student' && course.capacity > 0 && (
-                        <Button
-                          onClick={() => handleEnrollment(course.id)}
-                          className="flex-1"
-                        >
-                          Enroll
-                        </Button>
-                      )}
                     </div>
                   </div>
                 </CardContent>

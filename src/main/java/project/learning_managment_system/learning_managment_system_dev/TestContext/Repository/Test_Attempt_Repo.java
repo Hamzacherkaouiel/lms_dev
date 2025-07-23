@@ -8,4 +8,5 @@ import java.util.List;
 public interface Test_Attempt_Repo extends JpaRepository<TestAttempt,Integer> {
     List<TestAttempt> findByTest_Id(int id);
     List<TestAttempt> findByUserId(int id);
+    List<TestAttempt> findByUserIdAndTest_Id(int userid,int test_id);
 }

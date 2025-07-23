@@ -44,10 +44,10 @@ public class Enrollemnt_Controller {
         this.serviceEnrollemnt.deleteEnrollemnt(id);
         return ResponseEntity.status(204).build();
     }
-    @DeleteMapping("/student/{id}")
+    @DeleteMapping("/student/{id}/course/{courseId}")
     @PreAuthorize("hasRole('teacher')")
-    public ResponseEntity<Void> deleteEnrollementByStudentId(@PathVariable int id){
-        this.serviceEnrollemnt.deleteEnrollemntByStudentId(id);
+    public ResponseEntity<Void> deleteEnrollementByStudentId(@PathVariable int id,@PathVariable int courseId){
+        this.serviceEnrollemnt.deleteEnrollemntByStudentAndCourseId(id,courseId);
         return ResponseEntity.status(204).build();
     }
 

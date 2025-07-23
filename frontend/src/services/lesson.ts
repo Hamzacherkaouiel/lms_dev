@@ -1,5 +1,5 @@
 import api from '@/lib/api';
-import { Lesson, Module } from '@/types';
+import {Lesson, Module, SimpleLesson} from '@/types';
 
 interface SimpleLessonDto {
   id: number;
@@ -27,42 +27,57 @@ export const lessonService = {
   },
 
   // Get full lesson with video
-  getFullLesson: async (id: number): Promise<FullLessonDto> => {
+  getFullLesson: async (id: string): Promise<Lesson> => {
     const response = await api.get(`/lessons/${id}/full`);
     return response.data;
   },
 
   // Get lessons by module ID
-  getLessonsByModule: async (moduleId: number): Promise<SimpleLessonDto[]> => {
-    const response = await api.get(`/lessons/module/${moduleId}`);
-    return response.data;
+  getLessonsByModule: async (moduleId: number): Promise<SimpleLesson[]> => {
+    console.log(moduleId)
+    const response = await fetch(`http://localhost:8082/lessons/module/${moduleId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    return response.json();
   },
 
   // Create new lesson
-  createLesson: async (lessonData: Partial<Lesson>, moduleId: number): Promise<SimpleLessonDto> => {
-    const response = await api.post(`/lessons/module/${moduleId}`, lessonData);
-    return response.data;
+  createLesson: async (lessonData: Partial<Lesson>, moduleId: string, filename: string)=> {
+    const response = await fetch(`http://localhost:8082/lessons/module/${moduleId}/full?filename=${encodeURIComponent(filename)}`,
+        {
+          method: 'POST',
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(lessonData)
+        }
+        )
+    return response;
   },
 
   // Update lesson
-  updateLesson: async (id: number, lessonData: Partial<Lesson>): Promise<SimpleLessonDto> => {
+  updateLesson: async (id: string, lessonData: Partial<Lesson>): Promise<SimpleLessonDto> => {
     const response = await api.put(`/lessons/${id}`, lessonData);
     return response.data;
   },
 
   // Delete lesson
-  deleteLesson: async (id: number): Promise<void> => {
+  deleteLesson: async (id: string): Promise<void> => {
     await api.delete(`/lessons/${id}`);
   },
 
   // Upload video for lesson
-  uploadLessonVideo: async (lessonId: number, videoFile: FormData): Promise<void> => {
-    const response = await api.post(`/lessons/${lessonId}/video`, videoFile, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data;
+  uploadLessonVideo: async (url: string, videoFile: File) => {
+    const response = await fetch(url,
+        {
+          method: 'PUT',
+          body: videoFile
+        }
+        )
+    return response;
   }
 };
 
@@ -74,9 +89,13 @@ export const moduleService = {
   },
 
   // Get single module
-  getModule: async (id: number): Promise<Module> => {
-    const response = await api.get(`/modules/${id}`);
-    return response.data;
+  getModule: async (id: string | Array<string> | undefined): Promise<Module> => {
+    const response = await fetch(`http://localhost:8082/modules/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    return response.json();
   },
 
   // Get modules by course ID
@@ -99,7 +118,14 @@ export const moduleService = {
 
   // Delete module
   deleteModule: async (id: number): Promise<void> => {
-    await api.delete(`/modules/${id}`);
+    await fetch(`http://localhost:8082/modules/${id}`,
+        {
+          method: 'DELETE',
+          headers:{
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          }
+        }
+        );
   },
 
   // Get module with lessons

@@ -9,9 +9,13 @@ import project.learning_managment_system.learning_managment_system_dev.Config.Jw
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.Admin_Dto;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Dto.UserCreation;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Admin;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Student;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Teacher;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.UserNotFound;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.KafkaConfig.Producer;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Admin_Repo;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Student_Repo;
+import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Teacher_Repo;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Services.ManagementService.ServiceUser;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.mappers.Implementation.Admin_Mapper;
 
@@ -27,6 +31,10 @@ public class ServiceAdmin implements ServiceUser<Admin_Dto> {
     public Admin_Mapper adminMapper;
     @Autowired
     public Producer producer;
+    @Autowired
+    public Teacher_Repo teacherRepo;
+    @Autowired
+    public Student_Repo studentRepo;
     public BCryptPasswordEncoder bCrypt=new BCryptPasswordEncoder(12);
     @Override
     public List<Admin_Dto> getUsers() {
@@ -52,15 +60,29 @@ public class ServiceAdmin implements ServiceUser<Admin_Dto> {
     @Override
     public void deleteUser(int id) {
         Optional<Admin> admin=this.adminRepo.findById(id);
+        Optional<Teacher> teacher=this.teacherRepo.findById(id);
+        Optional<Student> student=this.studentRepo.findById(id);
         if(admin.isPresent()){
             this.adminRepo.deleteById(id);
             this.producer.syncData(UserCreation.builder()
                     .mail(admin.get().getMail())
                     .operation("DELETE")
                     .build());
+        } else if (teacher.isPresent()) {
+            this.teacherRepo.deleteById(id);
+            this.producer.syncData(UserCreation.builder()
+                    .mail(teacher.get().getMail())
+                    .operation("DELETE")
+                    .build());
+        } else if (student.isPresent()) {
+            this.studentRepo.deleteById(id);
+            this.producer.syncData(UserCreation.builder()
+                    .mail(student.get().getMail())
+                    .operation("DELETE")
+                    .build());
         }
         else {
-            throw  new UserNotFound("USER NOT FOUND");
+            throw  new UserNotFound("User not found");
         }
     }
     @Override

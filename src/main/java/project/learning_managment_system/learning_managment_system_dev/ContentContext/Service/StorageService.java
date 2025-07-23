@@ -42,7 +42,7 @@ public class StorageService {
         return fileName + " removed ...";
     }
     public String saveUrl(String filename){
-        return "https://s3.us-east-1.amazonaws.com/"+bucketName+"/"+filename;
+        return "https://s3." + s3Client.getRegionName() + ".amazonaws.com/" + bucketName + "/" + filename;
     }
     public String objectkey(String filename){
         return System.currentTimeMillis() + "_" + filename;

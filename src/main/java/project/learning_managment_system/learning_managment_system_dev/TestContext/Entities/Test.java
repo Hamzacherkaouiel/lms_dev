@@ -2,6 +2,8 @@ package project.learning_managment_system.learning_managment_system_dev.TestCont
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Entities.Course;
 
 import java.util.List;
@@ -23,5 +25,6 @@ public class Test {
     public List<Questions> questions;
     @OneToOne
     @JoinColumn(name = "course_id",nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Course course;
 }

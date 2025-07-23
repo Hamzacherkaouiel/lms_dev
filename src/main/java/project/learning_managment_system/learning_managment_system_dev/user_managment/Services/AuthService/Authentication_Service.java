@@ -48,7 +48,6 @@ public class Authentication_Service {
              userCreation.setPassword(this.bCrypt.encode(userCreation.getPassword()));
              Student student=this.studentRepo.save((Student)this.mapper.Creation(userCreation));
              return (Student_Dto) this.mapper.toDto(student);
-
     }
     public UserDTO createPrivateUser(UserCreation userCreation){
 

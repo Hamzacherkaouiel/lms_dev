@@ -3,17 +3,20 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { 
-  HomeIcon, 
-  BookOpenIcon, 
-  UserGroupIcon, 
-  CogIcon, 
-  LogoutIcon,
+import { LogOut as LogoutIcon } from 'lucide-react';
+import {
+  HomeIcon,
+  BookOpenIcon,
+  GroupIcon,  // <-- ici
+  CogIcon,
+  LogOutIcon,
   MenuIcon,
   XIcon,
   UserIcon,
-  GraduationCapIcon
+  GraduationCapIcon,
 } from 'lucide-react'
+
+
 import { Button } from '@/components/ui/Button'
 import { authService } from '@/services/auth'
 import { cn } from '@/lib/utils'
@@ -36,19 +39,25 @@ const navigationItems: NavigationItem[] = [
     name: 'Courses',
     href: '/courses',
     icon: BookOpenIcon,
-    roles: ['admin', 'teacher', 'student']
+    roles: ['admin', 'teacher']
   },
   {
     name: 'Students',
     href: '/students',
-    icon: UserGroupIcon,
+    icon: GroupIcon,
     roles: ['admin', 'teacher']
+  },
+  {
+    name: 'Admins',
+    href: '/admin',
+    icon: GroupIcon,
+    roles: ['admin']
   },
   {
     name: 'Teachers',
     href: '/teachers',
     icon: GraduationCapIcon,
-    roles: ['admin']
+    roles: ['admin', 'teacher']
   },
   {
     name: 'Profile',
@@ -67,10 +76,10 @@ const navigationItems: NavigationItem[] = [
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
-  const user = authService.getCurrentUser()
-  const userRole = user?.role || 'student'
+  const user = authService.getUserMail()
+  const userRole = authService.getUserRole()
 
-  const filteredItems = navigationItems.filter(item => 
+  const filteredItems = navigationItems.filter(item =>
     item.roles.includes(userRole)
   )
 
@@ -112,7 +121,7 @@ export default function Navigation() {
           </div>
           <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
             <div className="text-sm text-gray-700">
-              Welcome, {user?.firstname} {user?.lastname}
+              Welcome
             </div>
             <Button
               onClick={handleLogout}
@@ -140,7 +149,6 @@ export default function Navigation() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {isOpen && (
         <div className="md:hidden">
           <div className="pt-2 pb-3 space-y-1 sm:px-3">
@@ -165,7 +173,7 @@ export default function Navigation() {
             })}
             <div className="border-t border-gray-200 pt-4">
               <div className="px-3 py-2 text-sm text-gray-700">
-                Welcome, {user?.firstname} {user?.lastname}
+                Welcome,
               </div>
               <Button
                 onClick={handleLogout}

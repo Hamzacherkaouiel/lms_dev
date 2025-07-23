@@ -2,6 +2,8 @@ package project.learning_managment_system.learning_managment_system_dev.TestCont
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "testAttempt")
@@ -21,5 +23,6 @@ public class TestAttempt {
     public String message;
     @ManyToOne
     @JoinColumn(name = "quiz_id",nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Test test;
 }

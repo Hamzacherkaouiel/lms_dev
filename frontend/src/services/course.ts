@@ -1,5 +1,6 @@
 import api from '@/lib/api';
-import { Course, Module, Lesson } from '@/types';
+import {Course, Module, Lesson, Student} from '@/types';
+import axios from "axios";
 
 export const courseService = {
   // Get all courses
@@ -21,9 +22,15 @@ export const courseService = {
   },
 
   // Get courses by teacher email
-  getCoursesByTeacherEmail: async (email: string): Promise<Course[]> => {
-    const response = await api.get(`/courses/teacher/mail/${email}`);
-    return response.data;
+  getCoursesByTeacherEmail: async (email: string | null): Promise<Course[]> => {
+    const response = await fetch(`http://localhost:8082/courses/teacher/mail/${email}`,
+        {
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+        )
+    return response.json();
   },
 
   // Create new course
@@ -33,15 +40,33 @@ export const courseService = {
   },
 
   // Create course by teacher email
-  createCourseByEmail: async (courseData: Partial<Course>, email: string): Promise<Course> => {
-    const response = await api.post(`/courses/teacher/mail/${email}`, courseData);
-    return response.data;
+  createCourseByEmail: async (courseData: Partial<Course>, email: string | null): Promise<Course> => {
+    const response = await fetch(`http://localhost:8082/courses/teacher/mail/${email}`,
+        {
+            method: 'POST',
+            headers:{
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(courseData)
+        }
+        );
+    return response.json();
   },
 
   // Update course
   updateCourse: async (id: number, courseData: Partial<Course>): Promise<Course> => {
-    const response = await api.put(`/courses/${id}`, courseData);
-    return response.data;
+    const response = await fetch(`http://localhost:8082/courses/${id}`,
+        {
+          method: 'PUT',
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(courseData)
+        }
+        );
+    return response.json();
   },
 
   // Delete course
@@ -56,9 +81,29 @@ export const courseService = {
   },
 
   // Get enrolled courses by student email
-  getEnrolledCoursesByEmail: async (email: string): Promise<Course[]> => {
+  getEnrolledCoursesByEmail: async (email: string | null): Promise<Course[]> => {
     const response = await api.get(`/enrollemnt/mail/${email}`);
     return response.data;
+  },
+  getEnrolledStudentsByCourse: async (id: number): Promise<Student[]> => {
+    const response = await fetch(`http://localhost:8082/Student/enrolled/${id}`,
+        {
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+        );
+    return response.json();
+  },
+  getNotEnrolledStudents: async (id:number):Promise<Student[]> =>{
+    const response=await fetch(`http://localhost:8082/Student/not-enrolled/${id}`,
+        {
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+        )
+    return response.json()
   },
 
   // Create single enrollment
@@ -68,7 +113,16 @@ export const courseService = {
 
   // Create multiple enrollments
   createMultipleEnrollments: async (courseId: number, studentIds: number[]): Promise<void> => {
-    await api.post(`/enrollemnt/${courseId}/multiple`, studentIds);
+    await fetch(`http://localhost:8082/enrollemnt/${courseId}/multiple`,
+        {
+            method: 'POST',
+            headers:{
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(studentIds)
+        }
+        );
   },
 
   // Delete enrollment
@@ -77,7 +131,14 @@ export const courseService = {
   },
 
   // Delete enrollment by student ID
-  deleteEnrollmentByStudentId: async (studentId: number): Promise<void> => {
-    await api.delete(`/enrollemnt/student/${studentId}`);
+  deleteEnrollmentByStudentId: async (studentId: number,courseId:number): Promise<void> => {
+    await fetch(`http://localhost:8082/enrollemnt/student/${studentId}/course/${courseId}`,
+        {
+            method :'DELETE',
+            headers :{
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            }
+        }
+        );
   }
 };

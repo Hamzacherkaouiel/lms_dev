@@ -2,6 +2,8 @@ package project.learning_managment_system.learning_managment_system_dev.course_m
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Student;
 
 import java.time.LocalDate;
@@ -22,9 +24,11 @@ public class Enrollements {
     public LocalDate enrollmentDate;
     @ManyToOne
     @JoinColumn(name = "course_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Course course;
     @ManyToOne
     @JoinColumn(name = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Student student;
 
 }

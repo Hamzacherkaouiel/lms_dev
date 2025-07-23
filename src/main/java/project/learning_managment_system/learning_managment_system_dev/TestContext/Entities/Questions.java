@@ -2,6 +2,8 @@ package project.learning_managment_system.learning_managment_system_dev.TestCont
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class Questions {
     public int scoreQuestion;
     @ManyToOne
     @JoinColumn(name = "quiz_id",nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Test quiz;
     @OneToMany(mappedBy = "questions")
     public List<AnswerOption> answerOptions;

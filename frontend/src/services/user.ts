@@ -1,5 +1,5 @@
 import api from '@/lib/api';
-import { Student, Teacher, UserCreation } from '@/types';
+import {Admin, Student, Teacher, UserCreation} from '@/types';
 
 export const userService = {
   // Student operations
@@ -37,6 +37,11 @@ export const userService = {
     getEnrolledStudents: async (courseId: number): Promise<Student[]> => {
       const response = await api.get(`/Student/enrolled/${courseId}`);
       return response.data;
+    },
+    getStudents: async ():Promise<Student[]> =>{
+      const response=await api.get("/Student/")
+      return response.data
+
     }
   },
 
@@ -47,6 +52,11 @@ export const userService = {
       const response = await api.get('/Teacher/profile');
       return response.data;
     },
+    getTeachers: async ():Promise<Teacher[]> =>{
+      const response=await api.get("/Teacher/")
+      return response.data
+
+    },
 
     // Update profile
     updateProfile: async (id: number, teacherData: Partial<Teacher>): Promise<Teacher> => {
@@ -55,7 +65,7 @@ export const userService = {
     },
 
     // Update password
-    updatePassword: async (passwordData: UserCreation): Promise<string> => {
+    updatePassword: async (passwordData: { password: string; mail: string | null; operation: string }): Promise<string> => {
       const response = await api.put('/Teacher/password', passwordData);
       return response.data;
     },
@@ -74,32 +84,34 @@ export const userService = {
 
   // Admin operations
   admin: {
-    // Get all users
-    getAllUsers: async (): Promise<any[]> => {
-      const response = await api.get('/Admin/users');
+    getProfile: async (): Promise<Teacher> => {
+      const response = await api.get('/Admin/profile');
       return response.data;
     },
-
-    // Get all students
-    getAllStudents: async (): Promise<Student[]> => {
-      const response = await api.get('/Admin/students');
+    getAdmins: async (): Promise<Admin[]> => {
+      const response = await api.get('/Admin/');
+      return response.data;
+    },
+    updatePassword: async (passwordData: { password: string; mail: string | null; operation: string }): Promise<string> => {
+      const response = await api.put('/Admin/password', passwordData);
       return response.data;
     },
 
     // Get all teachers
-    getAllTeachers: async (): Promise<Teacher[]> => {
+    /*getAllTeachers: async (): Promise<Teacher[]> => {
       const response = await api.get('/Admin/teachers');
       return response.data;
-    },
+    },*/
 
     // Delete user
     deleteUser: async (userId: number): Promise<void> => {
-      await api.delete(`/Admin/user/${userId}`);
+      await api.delete(`/Admin/${userId}`);
     },
 
     // Update user role
-    updateUserRole: async (userId: number, role: string): Promise<void> => {
-      await api.put(`/Admin/user/${userId}/role`, { role });
+    updateProfile: async (id: number, adminData: Partial<Admin>): Promise<Admin> => {
+      const response = await api.put(`/Admin/${id}`, adminData);
+      return response.data;
     }
   },
 

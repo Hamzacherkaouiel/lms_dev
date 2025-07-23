@@ -2,6 +2,8 @@ package project.learning_managment_system.learning_managment_system_dev.course_m
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "lessons")
@@ -17,9 +19,11 @@ public class Lessons {
     public String description;
     @ManyToOne
     @JoinColumn(name = "module_id",nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Modules  module;
     public String s3Url;
     public String objectKey;
+    public String contentType;
 
 
 }

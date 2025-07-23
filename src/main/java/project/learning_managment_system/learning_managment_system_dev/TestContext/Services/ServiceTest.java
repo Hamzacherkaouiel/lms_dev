@@ -9,6 +9,8 @@ import project.learning_managment_system.learning_managment_system_dev.TestConte
 import project.learning_managment_system.learning_managment_system_dev.TestContext.Mappers.Imp.Mapper_Test;
 import project.learning_managment_system.learning_managment_system_dev.TestContext.Repository.Test_Repo;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Entities.Course;
+import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Course_Exception;
+import project.learning_managment_system.learning_managment_system_dev.course_managment.Repositories.Course_Repo;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Student;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Exceptions.CustomesException.UserNotFound;
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Repositories.Student_Repo;
@@ -22,7 +24,7 @@ public class ServiceTest {
     public Mapper_Test mapperTest;
     public Mapper_Questions mapperQuestion;
     public ServiceTestAttempt serviceTestAttempt;
-    public ServiceTest(Test_Repo testRepo,ServiceTestAttempt testAttempt){
+    public ServiceTest(Test_Repo testRepo,ServiceTestAttempt testAttempt,Course_Repo course_repo){
         this.testRepo=testRepo;
         this.mapperTest=new Mapper_Test();
         this.serviceTestAttempt=testAttempt;
@@ -56,7 +58,12 @@ public class ServiceTest {
         return this.mapperTest.toDto(this.testRepo.save(test));
     }
     public void deleteTest(int id) {
-        this.testRepo.deleteById(id);
+        Test test=this.testRepo.findById(id).orElseThrow(()->new Test_Exception("Test not found"));
+        Course course = test.getCourse();
+        if (course != null) {
+            course.setTest(null);
+        }
+        testRepo.delete(test);
     }
 
 }

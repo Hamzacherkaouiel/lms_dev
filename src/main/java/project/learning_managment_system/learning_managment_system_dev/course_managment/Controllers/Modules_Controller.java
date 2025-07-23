@@ -31,7 +31,7 @@ public class Modules_Controller {
     }
 
     @GetMapping("/course/{id}")
-    @PreAuthorize("hasRole('teacher')")
+    @PreAuthorize("hasAnyRole('teacher','admin','student')")
     public ResponseEntity<List<Modules_Dto>> getModulesByCourse(@PathVariable int id) {
         return ResponseEntity.ok(this.serviceModule.getModulesByCourse(id));
     }

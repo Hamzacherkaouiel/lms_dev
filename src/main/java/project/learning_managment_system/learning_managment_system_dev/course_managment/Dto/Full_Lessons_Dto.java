@@ -13,4 +13,5 @@ public class Full_Lessons_Dto {
     public int module_id;
     public String s3Url;
     public String objectKey;
+    public String contentType;
 }

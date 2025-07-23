@@ -3,6 +3,8 @@ package project.learning_managment_system.learning_managment_system_dev.course_m
 import jakarta.persistence.*;
 import lombok.*;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import project.learning_managment_system.learning_managment_system_dev.TestContext.Entities.Test;
 
 import project.learning_managment_system.learning_managment_system_dev.user_managment.Entities.Teacher;
@@ -28,6 +30,7 @@ public class Course {
     public List<Modules> modulesList;
     @ManyToOne
     @JoinColumn(name = "id",nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Teacher teacher;
     @OneToMany(mappedBy = "course")
     public List<Enrollements> enrollementsCourses;

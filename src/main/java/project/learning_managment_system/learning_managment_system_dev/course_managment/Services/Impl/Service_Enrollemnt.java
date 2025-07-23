@@ -62,40 +62,54 @@ public class Service_Enrollemnt {
         if(course.isFull()){
             throw new Enrollemnts_Exception("The course is already full you can't add student");
         }
+        course.capacity-=1;
         Student student=this.studentRepo.findById(studentId).orElseThrow(()->new UserNotFound("Stdeunt not found"));
         Enrollements enrollements= Enrollements.builder()
                 .enrollmentDate(LocalDate.now())
                 .course(course)
                 .student(student)
                 .build();
+        this.courseRepo.save(course);
         this.produceSingleMail(enrollements);
         return this.enrollemntRepo.save(enrollements);
     }
     public List<Enrollements> createMultipleEnrollemnts(int courseId, List<Integer> students){
+
         List<Enrollements> enrollements=new ArrayList<>();
         students.forEach(id->{
-            Course course=this.courseRepo.findById(id).get();
+            System.out.println(id);
+            Course course=this.courseRepo.findById(courseId).get();
             Student student=this.studentRepo.findById(id).orElseThrow(()->new UserNotFound("Student not found"));
             if(!this.enrollemntRepo.existsByStudent_IdAndCourse_Id(id,courseId)
             && !course.isFull()
             ) {
+                course.capacity-=1;
                 Enrollements element = Enrollements.builder()
                         .enrollmentDate(LocalDate.now())
                         .course(course)
                         .student(student)
                         .build();
                 enrollements.add(element);
+                this.courseRepo.save(course);
             }
         });
         this.produceMultipleMail(enrollements);
         return this.enrollemntRepo.saveAll(enrollements);
     }
     public void deleteEnrollemnt(int id){
-        this.enrollemntRepo.deleteById(id);
+        Enrollements enrollements=this.enrollemntRepo.findById(id).orElseThrow(()->new Enrollemnts_Exception("Enrollement not found"));
+        Course course=this.courseRepo.findById(enrollements.getCourse().getId()).orElseThrow(()->new Course_Exception("No course for this enrollemnt"));
+        course.setCapacity(course.getCapacity()+1);
+        this.courseRepo.save(course);
+        this.enrollemntRepo.delete(enrollements);
     }
     @Transactional
-    public void deleteEnrollemntByStudentId(int id){
-        this.enrollemntRepo.deleteByStudent_Id(id);
+    public void deleteEnrollemntByStudentAndCourseId(int id,int courseId){
+        Enrollements enrollements=this.enrollemntRepo.findByStudent_IdAndCourse_Id(id,courseId).orElseThrow(()->new Enrollemnts_Exception("Enrollment not found"));
+        Course course=this.courseRepo.findById(enrollements.getCourse().getId()).orElseThrow(()->new Course_Exception("No course for this enrollemnt"));
+        course.setCapacity(course.getCapacity()+1);
+        this.courseRepo.save(course);
+        this.enrollemntRepo.delete(enrollements);
     }
     private void produceSingleMail(Enrollements enrollements){
 

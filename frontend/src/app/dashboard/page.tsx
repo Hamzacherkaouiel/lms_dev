@@ -1,5 +1,5 @@
 'use client'
-
+import { LogOut } from 'lucide-react';
 import React, { useState, useEffect } from 'react'
 import Layout from '@/components/layout/Layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -16,24 +16,30 @@ import {
   ArrowRightIcon
 } from 'lucide-react'
 import Link from 'next/link'
+import {useRouter} from "next/navigation";
 
 export default function DashboardPage() {
   const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
-  const user = authService.getCurrentUser()
+  const role = authService.getUserRole()
+  const user = authService.getUserMail();
+  const router = useRouter()
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      if (authService.isTokenExpired()) router.push("/login")
       try {
-        if (user?.role === 'student') {
+        if (role === 'student') {
           // Fetch enrolled courses for students
-          const enrolledCourses = await courseService.getEnrolledCoursesByEmail(user.mail)
+          const enrolledCourses = await courseService.getEnrolledCoursesByEmail(user)
           setCourses(enrolledCourses)
-        } else if (user?.role === 'teacher') {
+        } else if (role === 'teacher') {
           // Fetch courses created by teacher
-          const teacherCourses = await courseService.getCoursesByTeacherEmail(user.mail)
+          const teacherCourses = await courseService.getCoursesByTeacherEmail(user)
           setCourses(teacherCourses)
+          console.log(teacherCourses)
+          console.log(courses)
         } else {
           // For admin, fetch all courses
           const allCourses = await courseService.getAllCourses()
@@ -49,9 +55,15 @@ export default function DashboardPage() {
 
     fetchDashboardData()
   }, [user])
+  useEffect(() => {
+    if (courses.length > 0) {
+      console.log("✅ State 'courses' updated:", courses);
+    }
+  }, [courses]);
+
 
   const getWelcomeMessage = () => {
-    switch (user?.role) {
+    switch (role) {
       case 'admin':
         return 'Welcome to the Admin Dashboard'
       case 'teacher':
@@ -73,26 +85,35 @@ export default function DashboardPage() {
       }
     ]
 
-    if (user?.role === 'teacher') {
-      const totalStudents = courses.reduce((acc, course) => acc + course.enrollementsCourses.length, 0)
-      return [
-        ...baseStats,
-        {
+    if (user === 'teacher') {
+
+      const base = [...baseStats]
+
+      /*if (hasEnrollmentData) {
+        const totalStudents = courses.reduce(
+            (acc, course) => acc + (course.enrollementsCourses?.length || 0),
+            0
+        )
+        base.push({
           title: 'Total Students',
           value: totalStudents,
           icon: UsersIcon,
           color: 'bg-green-500'
-        },
-        {
-          title: 'Active Courses',
-          value: courses.filter(c => c.capacity > 0).length,
-          icon: TrendingUpIcon,
-          color: 'bg-purple-500'
-        }
-      ]
+        })
+      }*/
+
+      base.push({
+        title: 'Active Courses',
+        value: courses.filter(c => c.capacity > 0).length,
+        icon: TrendingUpIcon,
+        color: 'bg-purple-500'
+      })
+
+      return base
     }
 
-    if (user?.role === 'student') {
+
+    if (role === 'student') {
       return [
         ...baseStats,
         {
@@ -103,7 +124,7 @@ export default function DashboardPage() {
         },
         {
           title: 'In Progress',
-          value: courses.length, // You can calculate actual progress
+          value: courses.length,
           icon: ClockIcon,
           color: 'bg-yellow-500'
         }
@@ -136,10 +157,10 @@ export default function DashboardPage() {
               {getWelcomeMessage()}
             </h1>
             <p className="text-gray-600 mt-1">
-              Hello, {user?.firstname} {user?.lastname}!
+              Hello,
             </p>
           </div>
-          {user?.role === 'teacher' && (
+          {user === 'teacher' && (
             <Link href="/courses/create">
               <Button className="inline-flex items-center">
                 <PlusIcon className="h-4 w-4 mr-2" />
@@ -176,7 +197,7 @@ export default function DashboardPage() {
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle>
-                {user?.role === 'student' ? 'My Courses' : 'Recent Courses'}
+                {user === 'student' ? 'My Courses' : 'Recent Courses'}
               </CardTitle>
               <Link href="/courses">
                 <Button variant="outline" size="sm">
@@ -197,9 +218,9 @@ export default function DashboardPage() {
               <div className="text-center py-8">
                 <BookOpenIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500">
-                  {user?.role === 'student' ? 'No courses enrolled yet' : 'No courses created yet'}
+                  {user === 'student' ? 'No courses enrolled yet' : 'No courses created yet'}
                 </p>
-                {user?.role === 'teacher' && (
+                {user === 'teacher' && (
                   <Link href="/courses/create">
                     <Button className="mt-4">
                       Create Your First Course
@@ -218,10 +239,6 @@ export default function DashboardPage() {
                       <div>
                         <h3 className="font-semibold text-gray-900">{course.title}</h3>
                         <p className="text-sm text-gray-500">{course.description}</p>
-                        <div className="flex items-center mt-1 text-xs text-gray-400">
-                          <UsersIcon className="h-3 w-3 mr-1" />
-                          {course.enrollementsCourses.length} students
-                        </div>
                       </div>
                     </div>
                     <Link href={`/courses/${course.id}`}>

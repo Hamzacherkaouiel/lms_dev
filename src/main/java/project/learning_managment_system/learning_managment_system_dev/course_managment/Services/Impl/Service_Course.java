@@ -1,6 +1,8 @@
 package project.learning_managment_system.learning_managment_system_dev.course_managment.Services.Impl;
 
 import org.springframework.stereotype.Service;
+import project.learning_managment_system.learning_managment_system_dev.TestContext.Entities.Test;
+import project.learning_managment_system.learning_managment_system_dev.TestContext.Repository.Test_Repo;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Dto.Course_Dto;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Entities.Course;
 import project.learning_managment_system.learning_managment_system_dev.course_managment.Exceptions.CustomesException.Course_Exception;
@@ -21,11 +23,13 @@ public class Service_Course implements Service_Interface<Course_Dto> {
     public Mapper_Interface<Course_Dto,Course> mapperInterface;
     public Course_Repo courseRepo;
     public Teacher_Repo teacherRepo;
+    public Test_Repo testRepo;
 
-    public Service_Course(Course_Repo repo,Teacher_Repo service){
+    public Service_Course(Course_Repo repo,Teacher_Repo service,Test_Repo test_repo){
         mapperInterface=new Mapper_Course();
         courseRepo=repo;
         this.teacherRepo=service;
+        this.testRepo=test_repo;
     }
     @Override
     public List<Course_Dto> getAllData() {
@@ -60,7 +64,17 @@ public class Service_Course implements Service_Interface<Course_Dto> {
 
     @Override
     public void deleteData(int id) {
-         this.courseRepo.deleteById(id);
+        Course course = courseRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        Test test = course.getTest();
+        if (test != null) {
+
+            course.setTest(null);
+            courseRepo.save(course);
+            testRepo.delete(test);
+        }
+
+        courseRepo.delete(course);
     }
     public List<Course_Dto> getCourseByOwnerId(int id){
         return this.courseRepo.findByTeacher_Id(id)

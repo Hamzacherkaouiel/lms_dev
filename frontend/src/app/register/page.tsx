@@ -12,6 +12,7 @@ import { UserCreation } from '@/types'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState<UserCreation>({
+    operation: "",
     firstname: '',
     lastname: '',
     mail: '',
@@ -95,6 +96,7 @@ export default function RegisterPage() {
                       name="firstname"
                       type="text"
                       required
+                      className="text-black"
                       placeholder="John"
                       value={formData.firstname}
                       onChange={handleInputChange}
@@ -110,6 +112,7 @@ export default function RegisterPage() {
                       id="lastname"
                       name="lastname"
                       type="text"
+                      className="text-black"
                       required
                       placeholder="Doe"
                       value={formData.lastname}
@@ -132,7 +135,7 @@ export default function RegisterPage() {
                     name="mail"
                     type="email"
                     required
-                    className="pl-10"
+                    className="pl-10 text-black"
                     placeholder="john@example.com"
                     value={formData.mail}
                     onChange={handleInputChange}
@@ -150,10 +153,9 @@ export default function RegisterPage() {
                     name="role"
                     value={formData.role}
                     onChange={handleInputChange}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-black"
                   >
                     <option value="student">Student</option>
-                    <option value="teacher">Teacher</option>
                   </select>
                 </div>
               </div>
@@ -171,7 +173,7 @@ export default function RegisterPage() {
                     name="password"
                     type={showPassword ? 'text' : 'password'}
                     required
-                    className="pl-10 pr-10"
+                    className="pl-10 pr-10 text-black"
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleInputChange}
@@ -203,7 +205,7 @@ export default function RegisterPage() {
                     name="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
                     required
-                    className="pl-10 pr-10"
+                    className="pl-10 pr-10 text-black"
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}

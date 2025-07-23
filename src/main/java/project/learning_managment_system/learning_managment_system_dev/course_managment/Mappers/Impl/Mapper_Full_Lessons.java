@@ -14,6 +14,7 @@ public class Mapper_Full_Lessons implements Mapper_Interface<Full_Lessons_Dto, L
                 .module_id(entity.getModule().getId())
                 .s3Url(entity.getS3Url())
                 .objectKey(entity.getObjectKey())
+                .contentType(entity.getContentType())
                 .build();
     }
 
@@ -21,6 +22,7 @@ public class Mapper_Full_Lessons implements Mapper_Interface<Full_Lessons_Dto, L
     public Lessons toEntity(Full_Lessons_Dto dto) {
         return Lessons.builder()
                 .description(dto.getDescription())
+                .contentType(dto.getContentType())
                 .build();
     }
 

@@ -3,7 +3,7 @@ export interface User {
   firstname: string;
   lastname: string;
   mail: string;
-  password?: string;
+  speciality:string
 }
 
 export interface Student extends User {
@@ -39,10 +39,14 @@ export interface Module {
 
 export interface Lesson {
   id: number;
-  title: string;
-  content: string;
-  videoUrl?: string;
+  description: string;
+  contentType: string;
+  s3Url: string;
   module: Module;
+}
+export interface SimpleLesson {
+  id: number;
+  description: string;
 }
 
 export interface Enrollment {
@@ -55,17 +59,25 @@ export interface Enrollment {
 export interface Test {
   id: number;
   title: string;
-  description: string;
-  course: Course;
   questions: Question[];
 }
 
 export interface Question {
   id: number;
-  text: string;
-  options: string[];
-  correctAnswer: string;
-  test: Test;
+  description: string;
+  scoreQuestion: number;
+  options: Answer[];
+}
+export interface Answer {
+  id: number;
+  answer: string;
+  isfalse: boolean
+}
+export interface TestAttempt {
+  id: number;
+  score: number;
+  max_score: number;
+  message: string
 }
 
 export interface UserCreation {
@@ -74,6 +86,8 @@ export interface UserCreation {
   mail: string;
   password: string;
   role: 'student' | 'teacher' | 'admin';
+  operation:string;
+  speciality:string
 }
 
 export interface ApiResponse<T> {
@@ -85,10 +99,6 @@ export interface ApiResponse<T> {
 export type UserRole = 'student' | 'teacher' | 'admin';
 
 export interface AuthUser {
-  id: number;
-  firstname: string;
-  lastname: string;
-  mail: string;
-  role: UserRole;
+  role: string;
   token: string;
 }

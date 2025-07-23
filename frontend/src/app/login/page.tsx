@@ -34,7 +34,8 @@ export default function LoginPage() {
         token: 'mock-jwt-token'
       }
       
-      authService.saveUser(mockUser)
+      authService.login({username:email,password:password}).then((response)=>authService.saveUser(response.access_token))
+
       router.push('/dashboard')
     } catch (error) {
       setError('Invalid credentials. Please try again.')
@@ -80,7 +81,7 @@ export default function LoginPage() {
                     name="email"
                     type="email"
                     required
-                    className="pl-10"
+                    className="pl-10 text-black"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -101,7 +102,7 @@ export default function LoginPage() {
                     name="password"
                     type={showPassword ? 'text' : 'password'}
                     required
-                    className="pl-10 pr-10"
+                    className="pl-10 pr-10 text-black"
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

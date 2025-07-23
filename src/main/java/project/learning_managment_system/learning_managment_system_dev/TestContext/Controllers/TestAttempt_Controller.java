@@ -21,6 +21,11 @@ public class TestAttempt_Controller {
     public ResponseEntity<List<Test_Attempt_Dto>> getAllAttemptions(@PathVariable String email ){
         return ResponseEntity.ok(this.serviceTestAttempt.getAllAttemptions(email));
     }
+    @GetMapping("/{email}/student/{testId}/test")
+    @PreAuthorize("hasRole('student')")
+    public ResponseEntity<List<Test_Attempt_Dto>> getAllAttemptionsByTest(@PathVariable String email,@PathVariable int testId ){
+        return ResponseEntity.ok(this.serviceTestAttempt.getAttemptionofTest(email,testId));
+    }
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('student')")
     public ResponseEntity<Test_Attempt_Dto> getSingleAttemption(@PathVariable int id ){
@@ -38,7 +43,7 @@ public class TestAttempt_Controller {
     }
     @DeleteMapping("/{attemptionId}")
     @PreAuthorize("hasRole('student')")
-    public ResponseEntity<Test_Attempt_Dto> submitTest(@PathVariable int attemptionId){
+    public ResponseEntity<Test_Attempt_Dto> deleteAttemption(@PathVariable int attemptionId){
         this.serviceTestAttempt.deleteAttempt(attemptionId);
         return ResponseEntity.status(204).build();
     }

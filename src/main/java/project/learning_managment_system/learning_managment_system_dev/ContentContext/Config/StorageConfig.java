@@ -26,6 +26,7 @@ public class StorageConfig {
         return AmazonS3Client.builder()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withRegion(region)
+                .withPathStyleAccessEnabled(true)
                 .build();
 
     }

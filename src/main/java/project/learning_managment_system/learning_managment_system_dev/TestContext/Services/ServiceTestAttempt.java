@@ -49,6 +49,12 @@ public class ServiceTestAttempt {
                 .stream().map(mapperTestAttempt::toDto)
                 .collect(Collectors.toList());
     }
+    public List<Test_Attempt_Dto> getAttemptionofTest(String mail,int testId){
+        Student student=this.studentRepo.findByMail(mail).orElseThrow(()-> new UserNotFound("Student not found"));
+        return this.testAttemptRepo.findByUserIdAndTest_Id(student.getId(),testId)
+                .stream().map(mapperTestAttempt::toDto)
+                .collect(Collectors.toList());
+    }
     public Test_Attempt_Dto getTestAttemption(int id ){
         return this.mapperTestAttempt.toDto(this.testAttemptRepo.findById(id).orElseThrow(()->new Attemption_Exception("Attemption not found")));
     }
